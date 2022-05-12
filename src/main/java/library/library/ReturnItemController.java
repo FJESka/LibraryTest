@@ -1,5 +1,7 @@
 package library.library;
 
+import bookSearch.DatabaseConnection;
+import itemSearch.ItemSearchQueries;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -9,10 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class ReturnItemController {
@@ -47,10 +46,16 @@ public class ReturnItemController {
 
     @FXML
     void searchItem(ActionEvent event) throws SQLException {
-        String findBarcodeQuery = "SELECT loan.loanID, itemcopy.barcode, book.title, itemcopy.status FROM loan INNER JOIN itemcopy ON loan.barcode = itemcopy.barcode INNER JOIN book ON itemcopy.ISBN = book.ISBN WHERE loan.barcode = '" + searchItemTextField.getText() + "';";
-        System.out.println(findBarcodeQuery);
-        PreparedStatement preparedStatement = JDBCConnection.jdbcConnection().prepareStatement(findBarcodeQuery);
-        ResultSet rs = preparedStatement.executeQuery();
+//        String findBarcodeQuery = "SELECT loan.loanID, itemcopy.barcode, book.title, itemcopy.status FROM loan INNER JOIN itemcopy ON loan.barcode = itemcopy.barcode INNER JOIN book ON itemcopy.ISBN = book.ISBN WHERE loan.barcode = '" + searchItemTextField.getText() + "';";
+//        System.out.println(findBarcodeQuery);
+//        PreparedStatement preparedStatement = JDBCConnection.jdbcConnection().prepareStatement(findBarcodeQuery);
+//        ResultSet rs = preparedStatement.executeQuery();
+
+        DatabaseConnection connectNow = new DatabaseConnection();
+        Connection connectDB = connectNow.getDBConnection();
+
+        Statement statement = connectDB.createStatement();
+        ResultSet rs = statement.executeQuery(Queries.getLoans);
 
         boolean itemReturnable = false;
 
