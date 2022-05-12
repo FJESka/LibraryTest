@@ -14,4 +14,8 @@ module library.library {
 
     opens library.library to javafx.fxml;
     exports library.library;
+
+    opens itemSearch to javafx.fxml;
+    exports itemSearch;
+
 }
