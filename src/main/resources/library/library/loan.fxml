@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.library.LoanController">
+   <children>
+      <Label layoutX="281.0" layoutY="26.0" text="Loan">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <TextField fx:id="searchBarcodeTextField" layoutX="196.0" layoutY="78.0" text="Barcode" />
+      <Button fx:id="searchBtn" layoutX="359.0" layoutY="78.0" mnemonicParsing="false" onAction="#searchItem" text="Search" />
+      <ListView fx:id="titleList" layoutX="201.0" layoutY="123.0" prefHeight="200.0" prefWidth="200.0" />
+      <Button fx:id="confirmBtn" layoutX="300.0" layoutY="339.0" mnemonicParsing="false" onAction="#confirmLoan" text="Confirm" />
+      <Button fx:id="cancelBtn" layoutX="241.0" layoutY="339.0" mnemonicParsing="false" onAction="#cancelLoan" prefHeight="26.0" prefWidth="59.0" text="Cancel" />
+      <Button fx:id="removeItemFromListBtn" layoutX="32.0" layoutY="339.0" mnemonicParsing="false" text="Remove item from list" />
+   </children>
+</AnchorPane>
