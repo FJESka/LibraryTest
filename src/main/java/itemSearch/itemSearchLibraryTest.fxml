@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="itemSearch.ItemSearchController">
+    <children>
+        <TableView fx:id="tableview1" layoutX="21.0" layoutY="71.0" prefHeight="593.0" prefWidth="1241.0">
+            <columns>
+                <TableColumn fx:id="colISBN1" prefWidth="88.45484924316406" text="ISBN" />
+                <TableColumn fx:id="colTitle1" prefWidth="167.7686004638672" text="Title" />
+                <TableColumn fx:id="colAuthor1" prefWidth="225.58316040039062" text="Author /Director" />
+                <TableColumn fx:id="colKeyword1" prefWidth="96.91683959960938" text="Keyword/Genre" />
+                <TableColumn fx:id="colLanguage1" prefWidth="89.805908203125" text="Language" />
+                <TableColumn fx:id="colPublisher1" prefWidth="91.00958251953125" text="Publisher" />
+                <TableColumn fx:id="colActors1" prefWidth="197.03955078125" text="Actors" />
+                <TableColumn fx:id="colAgeRestriction1" prefWidth="67.96038818359375" text="Age rating" />
+                <TableColumn fx:id="colCountry1" prefWidth="79.0264892578125" text="Country" />
+                <TableColumn fx:id="colTotalCopies1" prefWidth="78.9736328125" text="Total copies" />
+                <TableColumn fx:id="colAvailable1" prefWidth="53.14990234375" text="Available" />
+            </columns>
+        </TableView>
+        <Label layoutX="27.0" layoutY="20.0" text="Search Product">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+        </Label>
+        <TextField fx:id="searchBar1" layoutX="139.0" layoutY="18.0" prefHeight="26.0" prefWidth="894.0" promptText="Keywords..." />
+    </children>
+</AnchorPane>
