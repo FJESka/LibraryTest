@@ -72,7 +72,7 @@ public class ItemSearchController implements Initializable {
 //    }
 
     @Override
-    public void initialize(URL url, ResourceBundle resource) {
+   public void initialize(URL url, ResourceBundle resource) { /*
 
         DatabaseConnection connectNow = new DatabaseConnection();
         Connection connectDB = connectNow.getDBConnection();
@@ -204,7 +204,7 @@ public class ItemSearchController implements Initializable {
         } catch (SQLException e) {
             Logger.getLogger(ItemSearchController.class.getName()).log(Level.SEVERE, null, e);
 
-        }
+        }*/
 
     }
 }
