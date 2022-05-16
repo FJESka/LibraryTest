@@ -2,8 +2,10 @@ package com.example.loginform;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -19,7 +21,7 @@ public class LoginAppController extends LoginApp {
     private PasswordField loginPasswordPasswordField;
 
     @FXML
-    private AnchorPane AnchorPane1;
+    private BorderPane BorderPane1;
 
     @FXML
     private void submitButtonAction (ActionEvent event) throws SQLException, IOException {
@@ -53,7 +55,8 @@ public class LoginAppController extends LoginApp {
         }
         else
         {
-            //AnchorPane1.getChildren().setAll(FXMLLoader.load("ProfilePage.fxml"));
+            System.out.println(SQLLoginCode.Member());
+            //BorderPane1.getChildren().setAll(FXMLLoader.load("ProfilePage.fxml"));
             //INSERT CODE HERE TO DIRECT USER TO PROFILE PAGE
         }
         return;

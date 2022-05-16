@@ -8,6 +8,7 @@ public class SQLLoginCode {
     private static final String DATABASE_USERNAME = "Username for database";
     private static final String DATABASE_PASSWORD = "Password for database";
     private static final String SELECT_QUERY = "SELECT * FROM (InsertTableName) WHERE username_ID = ? and password_ID = ?";
+    private static Integer MemberID;
 
     public boolean validate(String usernameID, String passwordID) throws SQLException {
     //Start with establishing the connection to the database
@@ -22,6 +23,7 @@ public class SQLLoginCode {
 
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
+                memberID(resultSet.getInt("memberID"));
                 return true;
             }
         } catch (SQLException exception){
@@ -45,5 +47,14 @@ public static void printSQLException (SQLException exceptions){
                 }
             }
         }
+    }
+    public Integer memberID(int id){
+        Integer memberIDs = id;
+        MemberID = memberIDs;
+        System.out.println(MemberID);
+        return memberIDs;
+    }
+    public static Integer Member(){
+        return MemberID;
     }
 }
