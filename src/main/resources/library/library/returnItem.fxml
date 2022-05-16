@@ -11,8 +11,8 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.library.ReturnItemController">
    <children>
       <Button fx:id="searchItemBtn" layoutX="358.0" layoutY="65.0" mnemonicParsing="false" onAction="#searchItem" text="Search" />
-      <Button fx:id="cancelBtn" layoutX="198.0" layoutY="309.0" mnemonicParsing="false" onAction="#changeToSearch" text="Cancel" />
-      <Button fx:id="returnItemBtn" layoutX="330.0" layoutY="309.0" mnemonicParsing="false" onAction="#returnItem" text="Return Item" />
+      <Button fx:id="cancelBtn" layoutX="228.0" layoutY="331.0" mnemonicParsing="false" onAction="#changeToSearch" prefHeight="26.0" prefWidth="79.0" text="Cancel" />
+      <Button fx:id="returnItemBtn" layoutX="308.0" layoutY="331.0" mnemonicParsing="false" onAction="#returnItem" prefHeight="27.0" prefWidth="79.0" text="Return Item" />
       <ListView fx:id="returnItemList" layoutX="198.0" layoutY="96.0" prefHeight="200.0" prefWidth="212.0" />
       <TextField fx:id="searchItemTextField" layoutX="198.0" layoutY="65.0" />
       <Label layoutX="257.0" layoutY="14.0" text="Return Item">
@@ -20,5 +20,6 @@
             <Font size="18.0" />
          </font>
       </Label>
+      <Button fx:id="removItemFromListBtn" layoutX="37.0" layoutY="332.0" mnemonicParsing="false" onAction="#removeItemFromList" text="Remove item from list" />
    </children>
 </AnchorPane>
