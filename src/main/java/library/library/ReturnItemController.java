@@ -90,14 +90,14 @@ public class ReturnItemController {
         boolean itemReturnable = false;
 
         while (rs.next()) {
-       //     if (!returnList.contains(rs.getString("barcode") + rs.getString("title") + rs.getString("loanID") + rs.getString("status"))) {
                if (!returnItemList.getItems().contains("barcode")) {
-                returnList.add(rs.getString("barcode") + " " + rs.getString("title") + " " + rs.getString("loanID") + " " + rs.getString("status"));
+                returnList.add(rs.getString("barcode") + " " + rs.getString("title") + " " + rs.getString("loanID"));
 
                 populateReturnList();
             }
                //Får ej detta att funka...
-             if (returnList.contains(searchItemTextField.getText())){
+
+             if (returnList.equals(searchItemTextField.getText())){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setHeaderText(null);
                 alert.setContentText("The item already exists in the list.");
