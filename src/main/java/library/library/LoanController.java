@@ -49,62 +49,47 @@ public class LoanController {
 
     }
 
-    //MÅSTE TESTA MED DATABASEN OM DETTA FUNGERAR SOM DET SKA.. MÅSTE REFERERA TILL getMember och getMemberID eller liknande...
+    //MÅSTE TESTA MED DATABASEN OCH LOGIN FUNKTIONEN OM DET FUNKAR SOM DET SKA...
 
     @FXML
     void confirmLoan(ActionEvent event) throws IOException {
 
-        /*for (int i = 0; i < loanList.size(); i++) {
+        for (int i = 0; i < loanList.size(); i++) {
             String[] barcodeVariable = loanList.get(i).split(" ");
 
-            String updateLoanQuery = "INSERT INTO loan (barcode, memberID, dateOfLoan, dueDate)" + "VALUES ('" + barcodeVariable[0] + "', + "
-            ', ' " + Class.getMember.getMemberID() + "
-            ', " + " NOW(), (SELECT CURDATE() + INTERVAL (SELECT loanPeriod FROM itemcopy " + " WHERE barcode = '
-            " + barcodeVariable[0] +" ') WEEK));";
+            String insertLoanQuery = "INSERT INTO loan (barcode, memberID, dateOfLoan, dueDate) VALUES (" + barcodeVariable[0] + ", " + com.example.loginform.SQLLoginCode.Member() + ", NOW(), (SELECT CURDATE() + INTERVAL (SELECT loanPeriod FROM itemcopy WHERE barcode = " + barcodeVariable[0] + ")DAY ))";
 
-            String updateItemcopyQuery = "UPDATE itemcopy SET status = 'Not available' WHERE barcode = '" + barcodeVariable[0] + "';";
+            String updateItemcopyQuery = "UPDATE itemcopy SET status = 'Not available' WHERE barcode = " + barcodeVariable[0] + ";";
 
             System.out.println(updateItemcopyQuery);
 
-            String selectLoanQuery = "SELECT * FROM loan INNER JOIN itemcopy ON loan.barcode = itemcopy.barcode INNER JOIN member ON loan.loanID = member.memberID  WHERE barcode = '" + barcodeVariable[0] + "' + AND memberID = '" + Class.getMember.getMemberID + "' AND dateOfLoan >= CURDATE() AND returnDate = NULL;";
-
+            String selectLoanQuery = "SELECT * FROM loan INNER JOIN itemcopy ON loan.barcode = itemcopy.barcode INNER JOIN member ON loan.memberID= member.memberID  WHERE itemcopy.barcode = " + barcodeVariable[0] + " AND loan.memberID = " + com.example.loginform.SQLLoginCode.Member() + " AND dateOfLoan >= CURDATE() AND returnDate = NULL;";
 
             try {
                 PreparedStatement preparedStatement = JDBCConnection.jdbcConnection().prepareStatement(updateItemcopyQuery);
                 preparedStatement.executeUpdate(updateItemcopyQuery);
 
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+                PreparedStatement ps = JDBCConnection.jdbcConnection().prepareStatement(insertLoanQuery);
+                ps.executeUpdate(insertLoanQuery);
 
-            try {
-                PreparedStatement ps = JDBCConnection.jdbcConnection().prepareStatement(updateLoanQuery);
-                ps.executeUpdate(updateLoanQuery);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-            try {
                 System.out.println(selectLoanQuery);
-                PreparedStatement preparedStatement = JDBCConnection.jdbcConnection().prepareStatement(selectLoanQuery);
-                ResultSet rs = preparedStatement.executeQuery();
+                PreparedStatement preparedStatement2 = JDBCConnection.jdbcConnection().prepareStatement(selectLoanQuery);
+                ResultSet rs = preparedStatement2.executeQuery();
 
                 while (rs.next()) {
-                    changeSceneToConfirmation();
-                    ConfirmationController confirmationController = new ConfirmationController(); // Oklart om detta funkar.
-                    confirmationController.populateReceiptList();  //Oklart om detta funkar.
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setHeaderText("Confirmation");
+                    alert.setContentText("The loan was completed, see details below: " + "\n" + "LoanID: " + rs.getString("loanID") + "   " + "Barcode: " + rs.getString("barcode") +"   " + "Title: " + rs.getString("title") + "   " + "MemberID: " + rs.getString("memberID") + "\n" + "Date of loan: " + rs.getString("dateOfLoan") + "\n" + "Due date: " + rs.getString("dueDate"));
+                    alert.showAndWait();
                 }
+
+                cancelLoan(event);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }*/
-    }
-
-        void changeSceneToConfirmation() throws IOException {
-            Parent root = FXMLLoader.load(getClass().getResource("confirmation.fxml"));
-            Stage window = (Stage) confirmBtn.getScene().getWindow();
-            window.setScene(new Scene(root, 600, 400));
         }
+    }
 
         @FXML
         void searchItem (ActionEvent event) throws SQLException {
@@ -118,7 +103,7 @@ public class LoanController {
 
             while (rs.next()) {
                 if (!loanList.contains(rs.getString("barcode") + rs.getString("status") + rs.getString("title"))) {
-                    loanList.add(rs.getString("barcode") + " " + rs.getString("status") + " " + rs.getString("title"));
+                    loanList.add(rs.getString("barcode") + "  " + rs.getString("title"));
 
                     populateLoanList();
 

@@ -97,7 +97,7 @@ public class ReturnItemController {
             }
                //Får ej detta att funka...
 
-             if (returnList.equals(searchItemTextField.getText())){
+             if (returnList.contains(searchItemTextField.getText())){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setHeaderText(null);
                 alert.setContentText("The item already exists in the list.");
