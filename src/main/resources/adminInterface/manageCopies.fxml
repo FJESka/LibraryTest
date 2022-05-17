@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="adminInterface.ManageCopiesController">
+   <children>
+      <Label layoutX="233.0" layoutY="14.0" prefHeight="48.0" prefWidth="234.0" text="Manage copies">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Label>
+      <VBox alignment="TOP_RIGHT" layoutX="15.0" layoutY="78.0" prefHeight="206.0" prefWidth="66.0" spacing="20.0">
+         <children>
+            <Label text="Barcode" />
+            <Label text="Loan period" />
+            <Label text="ISBN" />
+            <Label text="Dvd ID" />
+            <Label text="Status" />
+            <Label text="Type" />
+         </children>
+      </VBox>
+      <VBox layoutX="91.0" layoutY="78.0" prefHeight="206.0" prefWidth="147.0" spacing="10.0">
+         <children>
+            <TextField fx:id="tfBarcode" prefWidth="97.0" />
+            <TextField fx:id="tfLoanPeriod" layoutX="10.0" layoutY="10.0" />
+            <TextField fx:id="tfISBN" layoutX="10.0" layoutY="36.0" />
+            <TextField fx:id="tfDvdID" layoutX="10.0" layoutY="10.0" />
+            <TextField fx:id="tfStatus" layoutX="10.0" layoutY="36.0" />
+            <TextField fx:id="tfType" layoutX="10.0" layoutY="62.0" />
+         </children>
+      </VBox>
+      <HBox layoutX="48.0" layoutY="307.0" prefHeight="26.0" prefWidth="191.0" spacing="15.0">
+         <children>
+            <Button fx:id="btnInsert" mnemonicParsing="false" prefHeight="26.0" prefWidth="52.0" text="Insert" onAction="#handleButtonAction"/>
+            <Button fx:id="btnUpdate" mnemonicParsing="false" prefHeight="26.0" prefWidth="61.0" text="Update" />
+            <Button fx:id="btnDelete" mnemonicParsing="false" prefHeight="26.0" prefWidth="56.0" style="-fx-background-color: #d0281e;" text="Delete" textFill="WHITE" />
+         </children>
+      </HBox>
+      <TableView fx:id="mcopiesTableview" layoutX="254.0" layoutY="78.0" prefHeight="206.0" prefWidth="432.0">
+        <columns>
+          <TableColumn fx:id="colBarcode" prefWidth="112.0" text="Barcode" />
+          <TableColumn fx:id="colLoanPeriod" prefWidth="77.0" text="Loan period" />
+            <TableColumn fx:id="colISBN" prefWidth="97.0" text="ISBN" />
+            <TableColumn fx:id="colDvdID" prefWidth="42.0" text="Dvd ID" />
+            <TableColumn fx:id="colStatus" prefWidth="44.0" text="Status" />
+            <TableColumn fx:id="colType" prefWidth="59.0" text="Type" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>

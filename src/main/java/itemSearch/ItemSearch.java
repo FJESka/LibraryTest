@@ -14,41 +14,15 @@ public class ItemSearch {
     Integer available;
 
     public ItemSearch(String isbn, String title, String author, String keyword, String language, String publisher, String actors, String ageRestriction, String country, Integer totalCopies, Integer available) {
-//       if(isbn == null){
-//           this.isbn = "not applicable";
-//       }else{
-//           this.isbn = isbn;
-//       }
-        this.isbn = isbn;
 
+        this.isbn = isbn;
         this.title = title;
         this.author = author;
         this.keyword = keyword;
         this.language = language;
-
-//        if(publisher == null){
-//            this.publisher = "not applicable";
-//        }else{
-//            this.publisher = publisher;
-//        }
         this.publisher = publisher;
-//        if(actors  == null){
-//            this.actors = "not applicable";
-//        }else{
-//            this.actors = actors;
-//        }
         this.actors = actors;
-//        if(ageRestriction == null){
-//            this.ageRestriction = "not applicable";
-//        }else{
-//            this.ageRestriction = ageRestriction;
-//        }
         this.ageRestriction = ageRestriction;
-//        if(country  == null){
-//            this.country = "not applicable";
-//        }else{
-//            this.country = country;
-//        }
         this.country = country;
         this.totalCopies = totalCopies;
         this.available = available;

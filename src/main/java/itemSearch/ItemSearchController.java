@@ -64,41 +64,13 @@ public class ItemSearchController implements Initializable {
 
     ObservableList<ItemSearch> itemSearchObservableList = FXCollections.observableArrayList();
 
-//    public String ifNull(String query){
-//        if(query == null){
-//            query = "not applicable";
-//        }
-//        return query;
-//    }
 
     @Override
-   public void initialize(URL url, ResourceBundle resource) { /*
+   public void initialize(URL url, ResourceBundle resource) {
 
         DatabaseConnection connectNow = new DatabaseConnection();
         Connection connectDB = connectNow.getDBConnection();
 
-//        String itemSearchQuery = "SELECT b.isbn, b.title, b.author, b.keyword, language, publisher, \"n/a\" as actors, \"n/a\" as ageRestriction, \"n/a\" as country, count(IF(status = 0, 1, null)) as available FROM Book b JOIN ItemCopy i \n" +
-//                "on b.isbn = i.ISBN_ItemCopy \n" +
-//                "GROUP by ISBN_ItemCopy\n" +
-//                "HAVING available > 0\n" +
-//                "\n" +
-//                "\n" +
-//                "UNION\n" +
-//                "\n" +
-//                "SELECT \"n/a\" as isbn, d.title, d.director, d.genre, language, \"n/a\" as publisher, actors, ageRestriction, country, count(IF(status = 0, 1, null)) as available FROM Dvd d JOIN ItemCopy i\n" +
-//                "on d.id = i.dvdID_ItemCopy\n" +
-//                "GROUP by dvdID_ItemCopy\n" +
-//                "HAVING available > 0;\n";
-//
-//        String searchAllItems = "SELECT b.isbn, b.title, b.author, b.keyword, language, publisher, NULL as actors, NULL as ageRestriction, NULL as country, count(IF(status = 0, 1, null)) as available FROM Book b JOIN ItemCopy i \n" +
-//                "on b.isbn = i.ISBN_ItemCopy \n" +
-//                "GROUP by ISBN_ItemCopy\n" +
-//                "\n" +
-//                "UNION\n" +
-//                "\n" +
-//                "SELECT NULL as isbn, d.title, d.director, d.genre, language, NULL as publisher, actors, ageRestriction, country, count(IF(status = 0, 1, null)) as available FROM Dvd d JOIN ItemCopy i\n" +
-//                "on d.id = i.dvdID_ItemCopy\n" +
-//                "GROUP by dvdID_ItemCopy;\n";
 
         try {
             Statement statement = connectDB.createStatement();
@@ -116,29 +88,6 @@ public class ItemSearchController implements Initializable {
                 String qCountry = resultSet.getString("country");
                 Integer qTotalCopies = resultSet.getInt("totalCopies");
                 Integer qAvailable = resultSet.getInt("available");
-
-//                if(queryPublisher == null){
-//                    queryPublisher = "not applicable";
-//                }
-//                if(queryActors == null){
-//                    queryActors = "not applicable";
-//                }
-//                if(queryAgeRestriction == null){
-//                    queryAgeRestriction = "not applicable";
-//                }
-//                if(queryCountry == null){
-//                    queryCountry = "not applicable";
-//                }
-
-//                ifNull(queryIsbn);
-//                ifNull(queryTitle);
-//                ifNull(queryAuthor);
-//                ifNull(queryKeyword);
-//                ifNull(queryLanguage);
-//                ifNull(queryPublisher);
-//                ifNull(queryActors);
-//                ifNull(queryAgeRestriction);
-//                ifNull(queryCountry);
 
                 //Populate the observableList with results from our SQL Query
 
@@ -204,7 +153,7 @@ public class ItemSearchController implements Initializable {
         } catch (SQLException e) {
             Logger.getLogger(ItemSearchController.class.getName()).log(Level.SEVERE, null, e);
 
-        }*/
+        }
 
     }
 }

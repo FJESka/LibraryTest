@@ -18,4 +18,7 @@ module library.library {
     opens itemSearch to javafx.fxml;
     exports itemSearch;
 
+    opens adminInterface to javafx.fxml;
+    exports adminInterface;
+
 }
