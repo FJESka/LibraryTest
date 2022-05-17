@@ -1,30 +1,40 @@
 package loginform;
 
+import bookSearch.DatabaseConnection;
+
 import java.sql.*;
 
 public class SQLLoginCode {
     //Initialization of the connection to the database
-    private static final String DATABASE_URL = "jdbc:mysql://localhost:3306?useSSL=false";
-    private static final String DATABASE_USERNAME = "Username for database";
-    private static final String DATABASE_PASSWORD = "Password for database";
-    private static final String SELECT_QUERY = "SELECT * FROM (InsertTableName) WHERE username_ID = ? and password_ID = ?";
+//    private static final String DATABASE_URL = "jdbc:mysql://localhost:3306?useSSL=false";
+//    private static final String DATABASE_USERNAME = "Username for database";
+//    private static final String DATABASE_PASSWORD = "Password for database";
+
+
+    private static final String SELECT_QUERY = "SELECT * FROM Member WHERE username = ? and password = ?";
     private static Integer MemberID;
 
     public boolean validate(String usernameID, String passwordID) throws SQLException {
     //Start with establishing the connection to the database
-        try (Connection databaseConnection = DriverManager
-                .getConnection(DATABASE_URL, DATABASE_USERNAME, DATABASE_PASSWORD);
+
+
+//        try (Connection databaseConnection = DriverManager
+//                .getConnection(DATABASE_URL, DATABASE_USERNAME, DATABASE_PASSWORD);
         //Creates a statement by using the connection objects
-        PreparedStatement preparedStatement = databaseConnection.prepareStatement(SELECT_QUERY)) {
-            preparedStatement.setString(1, usernameID);
-            preparedStatement.setString(2, passwordID);
+//        PreparedStatement preparedStatement = databaseConnection.prepareStatement(SELECT_QUERY))
+        try {
+            PreparedStatement preparedStatement = DatabaseConnection.getConnection().getDBConnection().prepareStatement(SELECT_QUERY);
+            {
+                preparedStatement.setString(1, usernameID);
+                preparedStatement.setString(2, passwordID);
 
-            System.out.println(preparedStatement);
+                System.out.println(preparedStatement);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                memberID(resultSet.getInt("memberID"));
-                return true;
+                ResultSet resultSet = preparedStatement.executeQuery();
+                if (resultSet.next()) {
+                    memberID(resultSet.getInt("memberID"));
+                    return true;
+                }
             }
         } catch (SQLException exception){
             //Prints SQL Exception information

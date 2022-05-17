@@ -21,4 +21,7 @@ module library.library {
     opens adminInterface to javafx.fxml;
     exports adminInterface;
 
+    opens loginform to javafx.fxml;
+    exports loginform;
+
 }

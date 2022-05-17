@@ -57,13 +57,13 @@ public class LoanController {
         for (int i = 0; i < loanList.size(); i++) {
             String[] barcodeVariable = loanList.get(i).split(" ");
 
-            String insertLoanQuery = "INSERT INTO loan (barcode, memberID, dateOfLoan, dueDate) VALUES (" + barcodeVariable[0] + ", " + com.example.loginform.SQLLoginCode.Member() + ", NOW(), (SELECT CURDATE() + INTERVAL (SELECT loanPeriod FROM itemcopy WHERE barcode = " + barcodeVariable[0] + ")DAY ))";
+            String insertLoanQuery = "INSERT INTO Loan (barcode, memberID, dateOfLoan, dueDate) VALUES (" + barcodeVariable[0] + ", " + loginform.SQLLoginCode.Member() + ", NOW(), (SELECT CURDATE() + INTERVAL (SELECT loanPeriod FROM ItemCopy WHERE barcode = " + barcodeVariable[0] + ")DAY ))";
 
-            String updateItemcopyQuery = "UPDATE itemcopy SET status = 'Not available' WHERE barcode = " + barcodeVariable[0] + ";";
+            String updateItemcopyQuery = "UPDATE ItemCopy SET status = 1 WHERE barcode = " + barcodeVariable[0] + ";";
 
             System.out.println(updateItemcopyQuery);
 
-            String selectLoanQuery = "SELECT * FROM loan INNER JOIN itemcopy ON loan.barcode = itemcopy.barcode INNER JOIN member ON loan.memberID= member.memberID  WHERE itemcopy.barcode = " + barcodeVariable[0] + " AND loan.memberID = " + com.example.loginform.SQLLoginCode.Member() + " AND dateOfLoan >= CURDATE() AND returnDate = NULL;";
+            String selectLoanQuery = "SELECT * FROM Loan INNER JOIN ItemCopy ON Loan.barcode = ItemCopy.barcode INNER JOIN Member ON Loan.memberID= Member.memberID  WHERE ItemCopy.barcode = " + barcodeVariable[0] + " AND Loan.memberID = " + loginform.SQLLoginCode.Member() + " AND dateOfLoan >= CURDATE() AND returnDate = NULL;";
 
             try {
                 PreparedStatement preparedStatement = JDBCConnection.jdbcConnection().prepareStatement(updateItemcopyQuery);
@@ -94,7 +94,7 @@ public class LoanController {
         @FXML
         void searchItem (ActionEvent event) throws SQLException {
 
-            String findBarcodeQuery = "SELECT itemcopy.barcode, itemcopy.status, book.title FROM library.itemcopy INNER JOIN book ON itemcopy.ISBN = book.ISBN WHERE itemcopy.status = 'Available' AND itemcopy.barcode = '" + searchBarcodeTextField.getText() + "';";
+            String findBarcodeQuery = "SELECT ItemCopy.barcode, ItemCopy.status, Book.title FROM ItemCopy INNER JOIN Book ON ItemCopy.ISBN = Book.ISBN WHERE ItemCopy.status = 0 AND ItemCopy.barcode = '" + searchBarcodeTextField.getText() + "';";
             System.out.println(findBarcodeQuery);
             PreparedStatement preparedStatement = JDBCConnection.jdbcConnection().prepareStatement(findBarcodeQuery);
             ResultSet rs = preparedStatement.executeQuery();

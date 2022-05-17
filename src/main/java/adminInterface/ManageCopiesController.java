@@ -78,13 +78,15 @@ public class ManageCopiesController implements Initializable {
         if(event.getSource() == btnInsert){
             insert();
         }
+        if(event.getSource() == btnUpdate){
+            update();
+        }
 
     }
 
-    ObservableList<ItemCopies> itemCopiesObservableList = FXCollections.observableArrayList();
 
-
-    void getRecords(){
+    public ObservableList<ItemCopies> getRecords(){
+        ObservableList<ItemCopies> itemCopiesObservableList = FXCollections.observableArrayList();
         try {
             Statement statement = getConnection().getDBConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(copies);
@@ -100,7 +102,6 @@ public class ManageCopiesController implements Initializable {
                 //Populate the observableList with results from our SQL Query
 
                 itemCopiesObservableList.add(new ItemCopies(qBarcode,qLoanPeriod, qDvdID, qISBN, qType, qStatus));
-                showList();
 
             }
 
@@ -108,11 +109,13 @@ public class ManageCopiesController implements Initializable {
             e.printStackTrace();
         }
 
+        return itemCopiesObservableList;
+
     }
 
     void showList(){
+        ObservableList<ItemCopies> list = getRecords();
         // Sets values in the table columns
-
         colBarcode.setCellValueFactory(new PropertyValueFactory<ItemCopies, String>("barcode"));
         colDvdID.setCellValueFactory(new PropertyValueFactory<ItemCopies, Integer>("dvdID"));
         colISBN.setCellValueFactory(new PropertyValueFactory<ItemCopies, String>("isbn"));
@@ -121,7 +124,7 @@ public class ManageCopiesController implements Initializable {
         colType.setCellValueFactory(new PropertyValueFactory<ItemCopies, String>("copyType"));
 
         //sets the results from SQL Query to the table view
-        mcopiesTableview.setItems(itemCopiesObservableList);
+        mcopiesTableview.setItems(list);
     }
 
     @Override
@@ -129,76 +132,74 @@ public class ManageCopiesController implements Initializable {
 
         Connection connectDB = getConnection().getDBConnection();
 
-        getRecords();
-
-//        try {
-//            Statement statement = connectDB.createStatement();
-//            ResultSet resultSet = statement.executeQuery(copies);
-//
-//            while (resultSet.next()) {
-//                String qBarcode = resultSet.getString("barcode");
-//                Integer qDvdID = resultSet.getObject("dvdID_ItemCopy", Integer.class);
-//                String qISBN = resultSet.getString("ISBN_ItemCopy");
-//                int qLoanPeriod = resultSet.getInt("loanPeriod");
-//                int qStatus = resultSet.getInt("status");
-//                String qType = resultSet.getString("copyTypeName");
-//
-//                //Populate the observableList with results from our SQL Query
-//
-//                itemCopiesObservableList.add(new ItemCopies(qBarcode,qLoanPeriod, qDvdID, qISBN, qType, qStatus));
-//
-//            }
-//            // Sets values in the table columns
-//
-//            colBarcode.setCellValueFactory(new PropertyValueFactory<ItemCopies, String>("barcode"));
-//            colDvdID.setCellValueFactory(new PropertyValueFactory<ItemCopies, Integer>("dvdID"));
-//            colISBN.setCellValueFactory(new PropertyValueFactory<ItemCopies, String>("isbn"));
-//            colLoanPeriod.setCellValueFactory(new PropertyValueFactory<ItemCopies, Integer>("loanPeriod"));
-//            colStatus.setCellValueFactory(new PropertyValueFactory<ItemCopies, Integer>("status"));
-//            colType.setCellValueFactory(new PropertyValueFactory<ItemCopies, String>("copyType"));
-//
-//            //sets the results from SQL Query to the table view
-//            mcopiesTableview.setItems(itemCopiesObservableList);
-//
-//        } catch (SQLException e){
-//            e.printStackTrace();
-//        }
-
+        showList();
     }
 
     public void insert(){
 
         try {
+            Statement statement = getConnection().getDBConnection().createStatement();
+
             String barcode = tfBarcode.getText();
             int loanPeriod = Integer.parseInt(tfLoanPeriod.getText());
             String isbn = tfISBN.getText();
-            Integer dvdID;
-            if (tfDvdID.getText().isEmpty()) {
-                dvdID = 0;
-            } else {
-                dvdID = Integer.valueOf(tfDvdID.getText());
-            }
             int status = Integer.parseInt(tfStatus.getText());
             String type = tfType.getText();
-
-
-            Statement statement = getConnection().getDBConnection().createStatement();
-
-//            String query = AdminQueries.getInsertQuery(barcode, loanPeriod, isbn, dvdID, type, status);
-//            statement.executeUpdate(query);
-
+            Integer dvdID = Integer.valueOf(tfDvdID.getText());
+            String queryDvdisNull = "INSERT INTO `LibraryTest`.`ItemCopy` (`barcode`, `loanPeriod`, `ISBN_ItemCopy`, `copyTypeName`, `status`) VALUES (' " + barcode + "', ' " + loanPeriod + " ', '" + isbn + "', '" + type + "', '" + status + "');";
             String query = "INSERT INTO `LibraryTest`.`ItemCopy` (`barcode`, `loanPeriod`, `ISBN_ItemCopy`, `dvdID_ItemCopy`, `copyTypeName`, `status`) VALUES (' " + barcode + "', ' " + loanPeriod + " ', '" + isbn + "', '" + dvdID + "', '" + type + "', '" + status + "');";
+            String queryISBNisNull = "INSERT INTO `LibraryTest`.`ItemCopy` (`barcode`, `loanPeriod`, `dvdID_ItemCopy`, `copyTypeName`, `status`) VALUES (' " + barcode + "', ' " + loanPeriod + " ', '" + dvdID + "', '" + type + "', '" + status + "');";
 
-            statement.executeUpdate(query);
+            if (tfDvdID.getText().isEmpty() || tfDvdID.getText() == null) {
+                statement.executeUpdate(queryDvdisNull);
+            } else if (tfISBN.getText().isEmpty() || tfISBN.getText() == null){
+                statement.executeUpdate(queryISBNisNull);
+            } else{
+                statement.executeUpdate(query);
+            }
 
-            Connection connectDB = getConnection().getDBConnection();
-
+            showList();
 
 
         } catch (SQLException ex) {
             ex.printStackTrace();
 
         }
+    }
+
+    public void update(){
+
+        try{
+            Statement statement = getConnection().getDBConnection().createStatement();
+
+            String barcode = tfBarcode.getText();
+            int loanPeriod = Integer.parseInt(tfLoanPeriod.getText());
+            String isbn = tfISBN.getText();
+            int status = Integer.parseInt(tfStatus.getText());
+            String type = tfType.getText();
+            Integer dvdID = Integer.valueOf(tfDvdID.getText());
+
+            String updateDvdisNull = "UPDATE `LibraryTest`.`ItemCopy` SET `barcode` = '" + barcode + "', `loanPeriod` = '" + loanPeriod + "', `ISBN_ItemCopy` = '" + isbn + "', `copyTypeName` = '"+ type +"', `status` = '" + status + "' WHERE (`barcode` = '" + barcode + "')";
+            String update = "UPDATE `LibraryTest`.`ItemCopy` SET `barcode` = '" + barcode + "', `loanPeriod` = '" + loanPeriod + "', `ISBN_ItemCopy` = '" + isbn + "', `dvdID_ItemCopy` = '" + dvdID + "', `copyTypeName` = '"+ type +"', `status` = '" + status + "' WHERE (`barcode` = '" + barcode + "')";
+            String updateISBNisNull = "UPDATE `LibraryTest`.`ItemCopy` SET `barcode` = '" + barcode + "', `loanPeriod` = '" + loanPeriod + "', `dvdID_ItemCopy` = '" + dvdID + "', `copyTypeName` = '"+ type +"', `status` = '" + status + "' WHERE (`barcode` = '" + barcode + "')";
+
+            if (tfDvdID.getText().isEmpty() || tfDvdID.getText() == null) {
+                statement.executeUpdate(updateDvdisNull);
+            } else if (tfISBN.getText().isEmpty() || tfISBN.getText() == null){
+                statement.executeUpdate(updateISBNisNull);
+            } else{
+                statement.executeUpdate(update);
+            }
+
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+
+        }
+
+        showList();
+
+
     }
 
 }

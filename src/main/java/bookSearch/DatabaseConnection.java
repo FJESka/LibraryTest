@@ -9,13 +9,13 @@ public class DatabaseConnection {
 
     public Connection getDBConnection(){
 
-        String databaseName = "LibraryTest";
-        String databaseUser = "root";
-        String databasePassword = "Belle2001";
-        String url = "jdbc:mysql://localhost/LibraryTest";
+        String databaseName = "sql5492952";
+        String databaseUser = "sql5492952";
+        String databasePassword = "KYaPVTwKWe";
+        String url = "jdbc:mysql://sql5.freesqldatabase.com:3306/sql5492952";
 
         try{
-            Class.forName("com.mysql.cj.jdbc.Driver");
+//            Class.forName("com.mysql.cj.jdbc.Driver");
             databaseLink = DriverManager.getConnection(url, databaseUser, databasePassword);
 
         }catch (Exception e){
