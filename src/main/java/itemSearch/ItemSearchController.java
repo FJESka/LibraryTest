@@ -64,15 +64,9 @@ public class ItemSearchController implements Initializable {
 
     ObservableList<ItemSearch> itemSearchObservableList = FXCollections.observableArrayList();
 
-//    public String ifNull(String query){
-//        if(query == null){
-//            query = "not applicable";
-//        }
-//        return query;
-//    }
 
     @Override
-   public void initialize(URL url, ResourceBundle resource) { /*
+   public void initialize(URL url, ResourceBundle resource) {
 
         DatabaseConnection connectNow = new DatabaseConnection();
         Connection connectDB = connectNow.getDBConnection();
@@ -159,7 +153,7 @@ public class ItemSearchController implements Initializable {
         } catch (SQLException e) {
             Logger.getLogger(ItemSearchController.class.getName()).log(Level.SEVERE, null, e);
 
-        }*/
+        }
 
     }
 }

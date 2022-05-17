@@ -34,4 +34,5 @@ public class ItemSearchQueries {
             "SELECT \"n/a\" as isbn, d.title, d.director, d.genre, language, \"n/a\" as publisher, actors, ageRestriction, country, count(dvdID_ItemCopy) as totalCopies, count(IF(status = 0, 1, null)) as available FROM Dvd d JOIN ItemCopy i\n" +
             "on d.id = i.dvdID_ItemCopy\n" +
             "GROUP by dvdID_ItemCopy;\n";
+
 }

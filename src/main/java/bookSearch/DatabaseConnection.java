@@ -25,5 +25,9 @@ public class DatabaseConnection {
         return databaseLink;
     }
 
+    public static DatabaseConnection getConnection(){
+        DatabaseConnection connectNow = new DatabaseConnection();
+        return connectNow;
+    }
 
 }
