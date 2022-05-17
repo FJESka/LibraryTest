@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 public class ReturnItemController {
@@ -95,7 +94,7 @@ public class ReturnItemController {
             if (rs1.next()) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setHeaderText(null);
-                alert.setContentText("Wrong barcode, the item is available and can not be returned. Try again.");
+                alert.setContentText("Wrong barcode, the item is not on loan and can not be returned. Try again.");
                 alert.showAndWait();
             }
 
@@ -105,10 +104,17 @@ public class ReturnItemController {
             ResultSet rs2 = preparedStatement.executeQuery();
 
             while (rs2.next()) {
-                if (!returnItemList.getItems().contains("barcode")) {
-                    returnList.add(rs2.getString("barcode") + "             " + rs2.getString("title") + "               " + rs2.getString("loanID"));
-
-                    populateReturnList();
+                if (!returnItemList.getItems().contains(rs2.getString("barcode") + "              " + rs2.getString("title") + "                " + rs2.getString("loanID"))) {
+                    returnList.add(rs2.getString("barcode") + "              " + rs2.getString("title") + "                " + rs2.getString("loanID"));
+                    AddItemToReturnList();
+                    searchItemTextField.clear();
+                }
+                else {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setHeaderText(null);
+                    alert.setContentText("The item is already added to the list!");
+                    alert.showAndWait();
+                    searchItemTextField.clear();
                 }
             }
         }
@@ -124,21 +130,10 @@ public class ReturnItemController {
             alert.setContentText("Wrong barcode, the barcode does not exists. Try again.");
             alert.showAndWait();
         }
-
-        //DENNA FUNKAR EJ...
-        if (returnList.contains(searchItemTextField.getText())){
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText(null);
-            alert.setContentText("The item already exists in the list.");
-            alert.showAndWait();
-        }
-
-
-
     }
 
     private ArrayList<String> returnList = new ArrayList<>();
-    void populateReturnList() {
+    void AddItemToReturnList() {
         ObservableList <String> returnListBarcodes = FXCollections.observableArrayList(returnList);
         returnItemList.setItems(returnListBarcodes);
     }

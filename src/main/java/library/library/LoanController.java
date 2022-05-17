@@ -1,5 +1,6 @@
 package library.library;
 
+import bookSearch.DatabaseConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,7 +19,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class LoanController {
     @FXML
@@ -59,12 +59,11 @@ public class LoanController {
 
             String insertLoanQuery = "INSERT INTO Loan (barcode, memberID, dateOfLoan, dueDate) VALUES (" + barcodeVariable[0] + ", " + loginform.SQLLoginCode.Member() + ", NOW(), (SELECT CURDATE() + INTERVAL (SELECT loanPeriod FROM ItemCopy WHERE barcode = " + barcodeVariable[0] + ")DAY ))";
 
-            String updateItemcopyQuery = "UPDATE ItemCopy SET status = 1 WHERE barcode = " + barcodeVariable[0] + ";";
+            String updateItemcopyQuery = "UPDATE ItemCopy SET status = 'Not available' WHERE barcode = " + barcodeVariable[0] + ";";
 
             System.out.println(updateItemcopyQuery);
 
-            String selectLoanQuery = "SELECT * FROM Loan INNER JOIN ItemCopy ON Loan.barcode = ItemCopy.barcode INNER JOIN Member ON Loan.memberID= Member.memberID  WHERE ItemCopy.barcode = " + barcodeVariable[0] + " AND Loan.memberID = " + loginform.SQLLoginCode.Member() + " AND dateOfLoan >= CURDATE() AND returnDate = NULL;";
-
+            String selectLoanQuery = "SELECT loanID, loan.barcode, loan.memberID, dateOfLoan, dueDate, returnDate, title FROM loan INNER JOIN itemcopy ON loan.barcode = itemcopy.barcode INNER JOIN book ON itemcopy.ISBN = book.ISBN INNER JOIN member ON loan.memberID = member.memberID WHERE loan.barcode = " + barcodeVariable[0] + " AND loan.memberID = " + loginform.SQLLoginCode.Member() + " AND dateOfLoan >= CURDATE() AND returnDate IS NULL";
             try {
                 PreparedStatement preparedStatement = JDBCConnection.jdbcConnection().prepareStatement(updateItemcopyQuery);
                 preparedStatement.executeUpdate(updateItemcopyQuery);
@@ -93,42 +92,62 @@ public class LoanController {
 
         @FXML
         void searchItem (ActionEvent event) throws SQLException {
+            String checkIfBarcodeExistsQuery = "SELECT barcode FROM itemcopy WHERE itemcopy.barcode = '" + searchBarcodeTextField.getText() + "';";
+            System.out.println(checkIfBarcodeExistsQuery);
+            //PreparedStatement ps = DatabaseConnection.getConnection().databaseLink.prepareStatement(checkIfBarcodeExistsQuery);
+            PreparedStatement ps = JDBCConnection.jdbcConnection().prepareStatement(checkIfBarcodeExistsQuery);
+            ResultSet rs = ps.executeQuery();
 
-            String findBarcodeQuery = "SELECT ItemCopy.barcode, ItemCopy.status, Book.title FROM ItemCopy INNER JOIN Book ON ItemCopy.ISBN = Book.ISBN WHERE ItemCopy.status = 0 AND ItemCopy.barcode = '" + searchBarcodeTextField.getText() + "';";
-            System.out.println(findBarcodeQuery);
-            PreparedStatement preparedStatement = JDBCConnection.jdbcConnection().prepareStatement(findBarcodeQuery);
-            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                String checkIfItemcopyIsAvailable = "SELECT status FROM itemcopy WHERE itemcopy.status = 'Not available' AND itemcopy.barcode = '" + searchBarcodeTextField.getText() + "';";
+                //PreparedStatement ps1 = DatabaseConnection.getConnection().databaseLink.prepareStatement(checkIfItemcopyIsAvailable);
+                PreparedStatement ps1 = JDBCConnection.jdbcConnection().prepareStatement(checkIfItemcopyIsAvailable);
+                ResultSet rs1 = ps1.executeQuery();
 
-            boolean availableForLoan = false;
-
-            while (rs.next()) {
-                if (!loanList.contains(rs.getString("barcode") + rs.getString("status") + rs.getString("title"))) {
-                    loanList.add(rs.getString("barcode") + "  " + rs.getString("title"));
-
-                    populateLoanList();
-
-                    availableForLoan = true;
-                }
-
-                //Får ej detta att funka...
-                else if (loanList.contains("barcode")) {
+                if (rs1.next()) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setHeaderText(null);
-                    alert.setContentText("The item already exists in the list.");
+                    alert.setContentText("Wrong barcode, the item is not available. Try again.");
                     alert.showAndWait();
                 }
 
-                else if (!availableForLoan) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setHeaderText(null);
-                    alert.setContentText("Wrong barcode, the item is not available or the barcode does not exists. Try again.");
-                    alert.showAndWait();
+                String findBarcodeQuery = "SELECT ItemCopy.barcode, ItemCopy.status, Book.title FROM ItemCopy INNER JOIN Book ON ItemCopy.ISBN = Book.ISBN WHERE ItemCopy.status = 'Available' AND ItemCopy.barcode = '" + searchBarcodeTextField.getText() + "';";
+                System.out.println(findBarcodeQuery);
+                //PreparedStatement preparedStatement = DatabaseConnection.getConnection().databaseLink.prepareStatement(findBarcodeQuery);
+                PreparedStatement preparedStatement = JDBCConnection.jdbcConnection().prepareStatement(findBarcodeQuery);
+                ResultSet rs2 = preparedStatement.executeQuery();
+
+                while (rs2.next()) {
+                    if (!loanList.contains(rs2.getString("barcode") + "             " + rs2.getString("title"))) {
+                        loanList.add(rs2.getString("barcode") + "             " + rs2.getString("title"));
+                        addItemToLoanList();
+                        searchBarcodeTextField.clear();
+                    }
+                    else {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setHeaderText(null);
+                        alert.setContentText("The item is already added to the list!");
+                        alert.showAndWait();
+                        searchBarcodeTextField.clear();
+                    }
                 }
+            }
+            else if (searchBarcodeTextField.getText().isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setHeaderText(null);
+                alert.setContentText("You need to type in a barcode!");
+                alert.showAndWait();
+            }
+            else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setHeaderText(null);
+                alert.setContentText("Wrong barcode, the barcode does not exists. Try again.");
+                alert.showAndWait();
             }
         }
 
         private ArrayList<String> loanList = new ArrayList<>();
-        void populateLoanList() {
+        void addItemToLoanList() {
                 ObservableList<String> loanListBarcodes = FXCollections.observableArrayList(loanList);
                 titleList.setItems(loanListBarcodes);
         }
