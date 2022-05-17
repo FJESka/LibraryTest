@@ -11,6 +11,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.w3c.dom.events.MouseEvent;
 
 import java.net.URL;
 import java.sql.Connection;
@@ -84,6 +85,36 @@ public class ManageCopiesController implements Initializable {
 
     }
 
+    public void handleMouseAction(javafx.scene.input.MouseEvent mouseEvent) {
+        ItemCopies item = mcopiesTableview.getSelectionModel().getSelectedItem();
+        tfBarcode.setText(item.getBarcode());
+        tfISBN.setText(item.getIsbn());
+        tfLoanPeriod.setText("" +item.getLoanPeriod());
+        tfStatus.setText(""+item.getStatus());
+        tfType.setText(item.getCopyType());
+
+        if(item.getDvdID() == null){
+            tfDvdID.setText(" ");
+        }else{
+            tfDvdID.setText("" +item.getDvdID());
+        }
+
+    }
+
+    public String getBarcode(){
+        ItemCopies item = mcopiesTableview.getSelectionModel().getSelectedItem();
+        String barcode = item.getBarcode();
+        return barcode;
+    }
+
+    public void clearTextfields(){
+        tfBarcode.clear();
+        tfISBN.clear();
+        tfDvdID.clear();
+        tfLoanPeriod.clear();
+        tfStatus.clear();
+        tfType.clear();
+    }
 
     public ObservableList<ItemCopies> getRecords(){
         ObservableList<ItemCopies> itemCopiesObservableList = FXCollections.observableArrayList();
@@ -100,7 +131,6 @@ public class ManageCopiesController implements Initializable {
                 String qType = resultSet.getString("copyTypeName");
 
                 //Populate the observableList with results from our SQL Query
-
                 itemCopiesObservableList.add(new ItemCopies(qBarcode,qLoanPeriod, qDvdID, qISBN, qType, qStatus));
 
             }
@@ -146,9 +176,9 @@ public class ManageCopiesController implements Initializable {
             int status = Integer.parseInt(tfStatus.getText());
             String type = tfType.getText();
             Integer dvdID = Integer.valueOf(tfDvdID.getText());
-            String queryDvdisNull = "INSERT INTO `LibraryTest`.`ItemCopy` (`barcode`, `loanPeriod`, `ISBN_ItemCopy`, `copyTypeName`, `status`) VALUES (' " + barcode + "', ' " + loanPeriod + " ', '" + isbn + "', '" + type + "', '" + status + "');";
-            String query = "INSERT INTO `LibraryTest`.`ItemCopy` (`barcode`, `loanPeriod`, `ISBN_ItemCopy`, `dvdID_ItemCopy`, `copyTypeName`, `status`) VALUES (' " + barcode + "', ' " + loanPeriod + " ', '" + isbn + "', '" + dvdID + "', '" + type + "', '" + status + "');";
-            String queryISBNisNull = "INSERT INTO `LibraryTest`.`ItemCopy` (`barcode`, `loanPeriod`, `dvdID_ItemCopy`, `copyTypeName`, `status`) VALUES (' " + barcode + "', ' " + loanPeriod + " ', '" + dvdID + "', '" + type + "', '" + status + "');";
+            String queryDvdisNull = "INSERT INTO `ItemCopy` (`barcode`, `loanPeriod`, `ISBN_ItemCopy`, `copyTypeName`, `status`) VALUES (' " + barcode + "', ' " + loanPeriod + " ', '" + isbn + "', '" + type + "', '" + status + "');";
+            String query = "INSERT INTO `ItemCopy` (`barcode`, `loanPeriod`, `ISBN_ItemCopy`, `dvdID_ItemCopy`, `copyTypeName`, `status`) VALUES (' " + barcode + "', ' " + loanPeriod + " ', '" + isbn + "', '" + dvdID + "', '" + type + "', '" + status + "');";
+            String queryISBNisNull = "INSERT INTO `ItemCopy` (`barcode`, `loanPeriod`, `dvdID_ItemCopy`, `copyTypeName`, `status`) VALUES (' " + barcode + "', ' " + loanPeriod + " ', '" + dvdID + "', '" + type + "', '" + status + "');";
 
             if (tfDvdID.getText().isEmpty() || tfDvdID.getText() == null) {
                 statement.executeUpdate(queryDvdisNull);
@@ -177,27 +207,43 @@ public class ManageCopiesController implements Initializable {
             String isbn = tfISBN.getText();
             int status = Integer.parseInt(tfStatus.getText());
             String type = tfType.getText();
-            Integer dvdID = Integer.valueOf(tfDvdID.getText());
+            Integer dvdID = null;
+            if (tfDvdID.getText().isBlank()){
+                tfDvdID.clear();
+            }else{
+                dvdID = Integer.valueOf(tfDvdID.getText());
+            }
 
-            String updateDvdisNull = "UPDATE `LibraryTest`.`ItemCopy` SET `barcode` = '" + barcode + "', `loanPeriod` = '" + loanPeriod + "', `ISBN_ItemCopy` = '" + isbn + "', `copyTypeName` = '"+ type +"', `status` = '" + status + "' WHERE (`barcode` = '" + barcode + "')";
-            String update = "UPDATE `LibraryTest`.`ItemCopy` SET `barcode` = '" + barcode + "', `loanPeriod` = '" + loanPeriod + "', `ISBN_ItemCopy` = '" + isbn + "', `dvdID_ItemCopy` = '" + dvdID + "', `copyTypeName` = '"+ type +"', `status` = '" + status + "' WHERE (`barcode` = '" + barcode + "')";
-            String updateISBNisNull = "UPDATE `LibraryTest`.`ItemCopy` SET `barcode` = '" + barcode + "', `loanPeriod` = '" + loanPeriod + "', `dvdID_ItemCopy` = '" + dvdID + "', `copyTypeName` = '"+ type +"', `status` = '" + status + "' WHERE (`barcode` = '" + barcode + "')";
+            String textBarcode = getBarcode();
+            String updateDvdisNull = "UPDATE `ItemCopy` SET `barcode` = '" +barcode + "' , `loanPeriod` = '"+loanPeriod +"', `ISBN_ItemCopy` = '" + isbn + "', `copyTypeName` = '" + type + "', `status` = '" + status+ "' WHERE (`barcode` = '" + textBarcode + "');";
+//            String update = "UPDATE `ItemCopy` SET `barcode` = '" + barcode + "', `loanPeriod` = '" + loanPeriod + "', `ISBN_ItemCopy` = '" + isbn + "', `dvdID_ItemCopy` = '" + dvdID + "', `copyTypeName` = '"+ type +"', `status` = '" + status + "' WHERE (`barcode` = '" + barcode + "')";
+            String updateISBNisNull = "UPDATE `ItemCopy` SET `barcode` = '" +barcode + "' , `loanPeriod` = '"+loanPeriod +"', `dvdID_ItemCopy` = '"+ dvdID + "', `copyTypeName` = '" + type + "', `status` = '" + status+ "' WHERE (`barcode` = '" + textBarcode + "');";
 
-            if (tfDvdID.getText().isEmpty() || tfDvdID.getText() == null) {
+            String update = "UPDATE `ItemCopy` SET `barcode` = '" +barcode + "' , `loanPeriod` = '"+loanPeriod +"', `ISBN_ItemCopy` = '" + isbn + "', `dvdID_ItemCopy` = '"+ dvdID + "', `copyTypeName` = '" + type + "', `status` = '" + status+ "' WHERE (`barcode` = '" + textBarcode + "');";
+
+//            statement.executeUpdate(update);
+            if (tfDvdID.getText().isBlank() || tfDvdID.getText() == null) {
+                tfDvdID.clear();
                 statement.executeUpdate(updateDvdisNull);
-            } else if (tfISBN.getText().isEmpty() || tfISBN.getText() == null){
+            } else if (tfISBN.getText() == null){
                 statement.executeUpdate(updateISBNisNull);
             } else{
+                //Lägg en alert "ett item kan inte vara både en bok och en dvd"
                 statement.executeUpdate(update);
             }
 
+            clearTextfields();
+            showList();
 
         } catch (SQLException ex) {
             ex.printStackTrace();
 
         }
 
-        showList();
+
+    }
+
+    public void delete(){
 
 
     }
