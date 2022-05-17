@@ -5,13 +5,22 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
+import library.library.HelloApplication;
+import loginform.LoginApp;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -62,15 +71,52 @@ public class ItemSearchController implements Initializable {
     @FXML
     private TextField searchBar1;
 
+    @FXML
+    private Button btnAdminView;
+
+    @FXML
+    private Button btnLoan;
+
+    @FXML
+    private Button btnLogin;
+
+
     ObservableList<ItemSearch> itemSearchObservableList = FXCollections.observableArrayList();
 
+    @FXML
+    public void buttonAction(ActionEvent event) throws IOException {
+        if(event.getSource() == btnAdminView){
+            //Kontroll på om användare är inloggad och om de är en admin?
+
+
+        }
+        if(event.getSource() == btnLoan){
+            //Kontroll för om användare är inloggad?
+            FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("loan.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+            Stage stage = new Stage();
+            stage.setTitle("Return Item");
+            stage.setScene(scene);
+            stage.show();
+
+        }
+        if(event.getSource() == btnLogin){
+            //Lägg in if sats för om användare redan är inloggad så kommer alert/profilsida?
+            FXMLLoader fxmlLoader = new FXMLLoader(LoginApp.class.getResource("hello-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 1000, 700);
+            Stage stage = new Stage();
+            stage.setTitle("Login page");
+            stage.setScene(scene);
+            stage.show();
+
+        }
+    }
 
     @Override
    public void initialize(URL url, ResourceBundle resource) {
 
         DatabaseConnection connectNow = new DatabaseConnection();
         Connection connectDB = connectNow.getDBConnection();
-
 
         try {
             Statement statement = connectDB.createStatement();
