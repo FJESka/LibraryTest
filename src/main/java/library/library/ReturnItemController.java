@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 public class ReturnItemController {
@@ -82,39 +81,59 @@ public class ReturnItemController {
 
     @FXML
     void searchItem(ActionEvent event) throws SQLException {
-        String findBarcodeQuery = "SELECT loan.loanID, itemcopy.barcode, book.title, itemcopy.status FROM loan INNER JOIN itemcopy ON loan.barcode = itemcopy.barcode INNER JOIN book ON itemcopy.ISBN = book.ISBN WHERE loan.barcode = '" + searchItemTextField.getText() + "';";
-        System.out.println(findBarcodeQuery);
-        PreparedStatement preparedStatement = JDBCConnection.jdbcConnection().prepareStatement(findBarcodeQuery);
-        ResultSet rs = preparedStatement.executeQuery();
+        String checkIfBarcodeExistsQuery = "SELECT barcode FROM itemcopy WHERE itemcopy.barcode = '" + searchItemTextField.getText() + "';";
+        System.out.println(checkIfBarcodeExistsQuery);
+        PreparedStatement ps = JDBCConnection.jdbcConnection().prepareStatement(checkIfBarcodeExistsQuery);
+        ResultSet rs = ps.executeQuery();
 
-        boolean itemReturnable = false;
+        if (rs.next()) {
+            String checkIfItemcopyIsNotAvailable = "SELECT status FROM itemcopy WHERE itemcopy.status = 'Available' AND itemcopy.barcode = '" + searchItemTextField.getText() + "';";
+            PreparedStatement ps1 = JDBCConnection.jdbcConnection().prepareStatement(checkIfItemcopyIsNotAvailable);
+            ResultSet rs1 = ps1.executeQuery();
 
-        while (rs.next()) {
-               if (!returnItemList.getItems().contains("barcode")) {
-                returnList.add(rs.getString("barcode") + " " + rs.getString("title") + " " + rs.getString("loanID"));
-
-                populateReturnList();
-            }
-               //Får ej detta att funka...
-
-             if (returnList.contains(searchItemTextField.getText())){
+            if (rs1.next()) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setHeaderText(null);
-                alert.setContentText("The item already exists in the list.");
+                alert.setContentText("Wrong barcode, the item is not on loan and can not be returned. Try again.");
                 alert.showAndWait();
             }
-            itemReturnable = true;
+
+            String findBarcodeQuery = "SELECT loan.loanID, itemcopy.barcode, book.title, itemcopy.status FROM loan INNER JOIN itemcopy ON loan.barcode = itemcopy.barcode INNER JOIN book ON itemcopy.ISBN = book.ISBN WHERE loan.barcode = '" + searchItemTextField.getText() + "';";
+            System.out.println(findBarcodeQuery);
+            PreparedStatement preparedStatement = JDBCConnection.jdbcConnection().prepareStatement(findBarcodeQuery);
+            ResultSet rs2 = preparedStatement.executeQuery();
+
+            while (rs2.next()) {
+                if (!returnItemList.getItems().contains(rs2.getString("barcode") + "              " + rs2.getString("title") + "                " + rs2.getString("loanID"))) {
+                    returnList.add(rs2.getString("barcode") + "              " + rs2.getString("title") + "                " + rs2.getString("loanID"));
+                    AddItemToReturnList();
+                    searchItemTextField.clear();
+                }
+                else {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setHeaderText(null);
+                    alert.setContentText("The item is already added to the list!");
+                    alert.showAndWait();
+                    searchItemTextField.clear();
+                }
+            }
         }
-        if (!itemReturnable){
+        else if (searchItemTextField.getText().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText(null);
-            alert.setContentText("Wrong barcode, please enter the barcode of the item you would like to return.");
+            alert.setContentText("You need to type in a barcode!");
+            alert.showAndWait();
+        }
+        else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText(null);
+            alert.setContentText("Wrong barcode, the barcode does not exists. Try again.");
             alert.showAndWait();
         }
     }
 
     private ArrayList<String> returnList = new ArrayList<>();
-    void populateReturnList() {
+    void AddItemToReturnList() {
         ObservableList <String> returnListBarcodes = FXCollections.observableArrayList(returnList);
         returnItemList.setItems(returnListBarcodes);
     }
