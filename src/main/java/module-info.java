@@ -24,4 +24,6 @@ module library.library {
     opens loginform to javafx.fxml;
     exports loginform;
 
+    opens Overdue to javafx.fxml;
+    exports Overdue;
 }
