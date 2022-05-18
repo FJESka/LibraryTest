@@ -60,4 +60,12 @@ public class Queries {
         String findBarcodeQuery = "SELECT loan.loanID, ItemCopy.barcode, book.title, ItemCopy.status FROM loan INNER JOIN ItemCopy ON loan.barcode = ItemCopy.barcode INNER JOIN book ON ItemCopy.ISBN_ItemCopy = book.isbn WHERE loan.barcode = '" + searchItemTextField + "';";
     return findBarcodeQuery;
     }
+
+    public static String maxLoanLimitQuery(){
+        return "SELECT maxLoanLimit FROM Member WHERE memberID = '1'";
+    }
+
+    public static String NoOfLoanQuery(){
+        return "SELECT COUNT (loanID) AS numberOfLoans FROM Loan WHERE memberID = '1' AND returnDate IS NULL;";
+    }
 }

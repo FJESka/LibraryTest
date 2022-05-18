@@ -11,24 +11,22 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import library.library.HelloApplication;
+import library.library.LoanController;
+import library.library.Queries;
 import loginform.LoginApp;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static bookSearch.DatabaseConnection.getConnection;
 
 public class ItemSearchController implements Initializable {
 
@@ -98,6 +96,11 @@ public class ItemSearchController implements Initializable {
             stage.setTitle("Return Item");
             stage.setScene(scene);
             stage.show();
+
+            //Provar att lägga till en metod för att visa antal lån och maxgräns för lånen. Inte säker på att det funkar.
+            LoanController loanController = new LoanController();
+            loanController.checkIfAllowedToBorrow();
+
 
         }
         if(event.getSource() == btnLogin){

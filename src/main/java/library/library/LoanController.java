@@ -1,5 +1,6 @@
 package library.library;
 
+import itemSearch.ItemSearchQueries;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -7,10 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -40,6 +38,12 @@ public class LoanController {
     @FXML
     private ListView<String> titleList;
 
+    @FXML
+    public Label currentLoansTextField;
+
+    @FXML
+    public Label maxLoansTextField;
+
     private ArrayList<String> loanList = new ArrayList<>();
 
     // Method to cancel loan and change scene to itemSearch.
@@ -63,6 +67,8 @@ public class LoanController {
             try {
                 PreparedStatement preparedStatement = getConnection().getDBConnection().prepareStatement(Queries.LoanUpdateItemcopyQuery(barcodeVariable));
                 preparedStatement.executeUpdate(Queries.LoanUpdateItemcopyQuery(barcodeVariable));
+
+
 
                 PreparedStatement ps = getConnection().getDBConnection().prepareStatement(Queries.insertLoanQuery(barcodeVariable));
                 ps.executeUpdate(Queries.insertLoanQuery(barcodeVariable));
@@ -117,6 +123,40 @@ public class LoanController {
         }
         else {
             alertMessage(Alert.AlertType.INFORMATION, "Wrong barcode, the barcode does not exists. Try again.");
+        }
+    }
+
+    // HAR LAGT TILL DETTA UNDER FÖR ATT FÖRSÖKA VISA HUR MÅNGA LÅN EN MEMBER HAR OCH HUR MÅNGA MAXGRÄNSEN ÄR.
+    // VET EJ OM DET FUNKAR, BEHÖVS TESTAS MED GUSTAVS INLOGG DEL.
+
+    public void checkIfAllowedToBorrow() {
+        try {
+            PreparedStatement preparedStatement = getConnection().getDBConnection().prepareStatement(Queries.maxLoanLimitQuery());
+            preparedStatement.executeQuery(Queries.maxLoanLimitQuery());
+            ResultSet rs = preparedStatement.executeQuery();
+
+            PreparedStatement preparedStatement1 = getConnection().getDBConnection().prepareStatement(Queries.NoOfLoanQuery());
+            preparedStatement.executeQuery(Queries.NoOfLoanQuery());
+            ResultSet rs1 = preparedStatement1.executeQuery();
+
+            while (rs.next()) {
+                maxLoansTextField.setText("Maximum number of loans possible: " + rs.getInt("maxLoanLimit"));
+            }
+            while (rs1.next()) {
+                currentLoansTextField.setText("You currently have: " + rs1.getInt("numberOfLoans") + "loans.");
+            }
+
+            if (rs1.getInt("numberOfLoans") > rs.getInt("maxLoanLimit")) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setHeaderText(null);
+                alert.setContentText("You have reached your maximum number of loans.");
+                alert.showAndWait();
+
+                confirmBtn.setDisable(true);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
