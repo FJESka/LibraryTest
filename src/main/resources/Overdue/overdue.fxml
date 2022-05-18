@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="543.0" prefWidth="639.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.overdue1.HelloController">
+   <children>
+      <AnchorPane prefHeight="543.0" prefWidth="162.0" style="-fx-background-color: #98421e;">
+         <children>
+            <Button fx:id="button_Back" layoutX="54.0" layoutY="488.0" mnemonicParsing="false" text="Back" />
+         </children>
+      </AnchorPane>
+      <TableView fx:id="table_overdue" layoutX="162.0" prefHeight="543.0" prefWidth="479.0">
+        <columns>
+          <TableColumn fx:id="col_memberId" prefWidth="135.0" text="Member ID" />
+          <TableColumn fx:id="col_title" prefWidth="203.0" text="Title" />
+            <TableColumn fx:id="col_dueDate" prefWidth="140.0" text="Overdue" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>
