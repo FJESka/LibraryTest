@@ -19,6 +19,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import static bookSearch.DatabaseConnection.getConnection;
+
 public class LoanController {
     @FXML
     private Button cancelBtn;
@@ -59,13 +61,13 @@ public class LoanController {
             String[] barcodeVariable = loanList.get(i).split(" ");
 
             try {
-                PreparedStatement preparedStatement = JDBCConnection.jdbcConnection().prepareStatement(Queries.LoanUpdateItemcopyQuery(barcodeVariable));
+                PreparedStatement preparedStatement = getConnection().getDBConnection().prepareStatement(Queries.LoanUpdateItemcopyQuery(barcodeVariable));
                 preparedStatement.executeUpdate(Queries.LoanUpdateItemcopyQuery(barcodeVariable));
 
-                PreparedStatement ps = JDBCConnection.jdbcConnection().prepareStatement(Queries.insertLoanQuery(barcodeVariable));
+                PreparedStatement ps = getConnection().getDBConnection().prepareStatement(Queries.insertLoanQuery(barcodeVariable));
                 ps.executeUpdate(Queries.insertLoanQuery(barcodeVariable));
 
-                PreparedStatement preparedStatement2 = JDBCConnection.jdbcConnection().prepareStatement(Queries.selectLoanQuery(barcodeVariable));
+                PreparedStatement preparedStatement2 = getConnection().getDBConnection().prepareStatement(Queries.selectLoanQuery(barcodeVariable));
                 ResultSet rs = preparedStatement2.executeQuery();
 
                 while (rs.next()) {
@@ -82,12 +84,12 @@ public class LoanController {
     @FXML
     void searchItem (ActionEvent event) throws SQLException {
         //PreparedStatement ps = DatabaseConnection.getConnection().databaseLink.prepareStatement(checkIfBarcodeExistsQuery);
-        PreparedStatement ps = JDBCConnection.jdbcConnection().prepareStatement(Queries.LoanCheckIfBarcodeExistsQuery(searchBarcodeTextField.getText()));
+        PreparedStatement ps = getConnection().getDBConnection().prepareStatement(Queries.LoanCheckIfBarcodeExistsQuery(searchBarcodeTextField.getText()));
         ResultSet rs = ps.executeQuery();
 
         if (rs.next()) {
             //PreparedStatement ps1 = DatabaseConnection.getConnection().databaseLink.prepareStatement(checkIfItemcopyIsAvailable);
-            PreparedStatement ps1 = JDBCConnection.jdbcConnection().prepareStatement(Queries.LoanCheckIfItemCopyIsAvailable(searchBarcodeTextField.getText()));
+            PreparedStatement ps1 = getConnection().getDBConnection().prepareStatement(Queries.LoanCheckIfItemCopyIsAvailable(searchBarcodeTextField.getText()));
             ResultSet rs1 = ps1.executeQuery();
 
             if (rs1.next()) {
@@ -95,7 +97,7 @@ public class LoanController {
             }
 
             //PreparedStatement preparedStatement = DatabaseConnection.getConnection().databaseLink.prepareStatement(findBarcodeQuery);
-            PreparedStatement preparedStatement = JDBCConnection.jdbcConnection().prepareStatement(Queries.LoanFindBarcodeQuery(searchBarcodeTextField.getText()));
+            PreparedStatement preparedStatement = getConnection().getDBConnection().prepareStatement(Queries.LoanFindBarcodeQuery(searchBarcodeTextField.getText()));
             ResultSet rs2 = preparedStatement.executeQuery();
 
             while (rs2.next()) {
