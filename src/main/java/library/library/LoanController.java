@@ -1,6 +1,5 @@
 package library.library;
 
-import bookSearch.DatabaseConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,8 +18,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import static bookSearch.DatabaseConnection.getConnection;
 
 public class LoanController {
     @FXML
@@ -90,7 +87,7 @@ public class LoanController {
 
         if (rs.next()) {
             //PreparedStatement ps1 = DatabaseConnection.getConnection().databaseLink.prepareStatement(checkIfItemcopyIsAvailable);
-            PreparedStatement ps1 = JDBCConnection.jdbcConnection().prepareStatement(Queries.LoanCheckIfItemcopyIsAvailable(searchBarcodeTextField.getText()));
+            PreparedStatement ps1 = JDBCConnection.jdbcConnection().prepareStatement(Queries.LoanCheckIfItemCopyIsAvailable(searchBarcodeTextField.getText()));
             ResultSet rs1 = ps1.executeQuery();
 
             if (rs1.next()) {

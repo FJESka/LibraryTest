@@ -1,7 +1,5 @@
 package library.library;
 
-import javafx.scene.control.TextField;
-
 public class Queries {
 
     public static String getLoans = "SELECT l.loanID, i.barcode, i.status, b.title FROM Loan l JOIN ItemCopy i on l.barcode = i.barcode JOIN Member m on l.memberID = m.memberID JOIN Book b on i.ISBN_ItemCopy = b.ISBN\n" +
@@ -24,17 +22,17 @@ public class Queries {
     }
 
     public static String LoanCheckIfBarcodeExistsQuery(String searchBarcodeTextField) {
-        String checkIfBarcodeExistsQuery = "SELECT barcode FROM itemcopy WHERE itemcopy.barcode = '" + searchBarcodeTextField + "';";
+        String checkIfBarcodeExistsQuery = "SELECT barcode FROM itemCopy WHERE itemCopy.barcode = '" + searchBarcodeTextField + "';";
     return checkIfBarcodeExistsQuery;
     }
 
-    public static String LoanCheckIfItemcopyIsAvailable(String searchBarcodeTextField) {
-        String checkIfItemcopyIsAvailable = "SELECT status FROM itemcopy WHERE itemcopy.status = 'Not available' AND itemcopy.barcode = '" + searchBarcodeTextField + "';";
-    return checkIfItemcopyIsAvailable;
+    public static String LoanCheckIfItemCopyIsAvailable(String searchBarcodeTextField) {
+        String checkIfItemCopyIsAvailable = "SELECT status FROM itemCopy WHERE itemCopy.status = 1 AND itemCopy.barcode = '" + searchBarcodeTextField + "';";
+    return checkIfItemCopyIsAvailable;
     }
 
     public static String LoanFindBarcodeQuery(String searchBarcodeTextField) {
-        String findBarcodeQuery = "SELECT ItemCopy.barcode, ItemCopy.status, Book.title FROM ItemCopy INNER JOIN Book ON ItemCopy.ISBN = Book.ISBN WHERE ItemCopy.status = 'Available' AND ItemCopy.barcode = '" + searchBarcodeTextField + "';";
+        String findBarcodeQuery = "SELECT ItemCopy.barcode, ItemCopy.status, Book.title FROM ItemCopy INNER JOIN Book ON ItemCopy.ISBN = Book.isbn WHERE ItemCopy.status = 0 AND ItemCopy.barcode = '" + searchBarcodeTextField + "';";
     return findBarcodeQuery;
     }
 
