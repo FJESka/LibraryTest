@@ -20,6 +20,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import static bookSearch.DatabaseConnection.getConnection;
+
 public class LoanController {
     @FXML
     private Button cancelBtn;
@@ -92,16 +94,16 @@ public class LoanController {
 
         @FXML
         void searchItem (ActionEvent event) throws SQLException {
-            String checkIfBarcodeExistsQuery = "SELECT barcode FROM itemcopy WHERE itemcopy.barcode = '" + searchBarcodeTextField.getText() + "';";
+            String checkIfBarcodeExistsQuery = "SELECT barcode FROM ItemCopy WHERE ItemCopy.barcode = '" + searchBarcodeTextField.getText() + "';";
             System.out.println(checkIfBarcodeExistsQuery);
             //PreparedStatement ps = DatabaseConnection.getConnection().databaseLink.prepareStatement(checkIfBarcodeExistsQuery);
-            PreparedStatement ps = JDBCConnection.jdbcConnection().prepareStatement(checkIfBarcodeExistsQuery);
+            PreparedStatement ps = getConnection().getDBConnection().prepareStatement(checkIfBarcodeExistsQuery);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                String checkIfItemcopyIsAvailable = "SELECT status FROM itemcopy WHERE itemcopy.status = 'Not available' AND itemcopy.barcode = '" + searchBarcodeTextField.getText() + "';";
+                String checkIfItemcopyIsAvailable = "SELECT status FROM ItemCopy WHERE ItemCopy.status = 1 AND ItemCopy.barcode = '" + searchBarcodeTextField.getText() + "';";
                 //PreparedStatement ps1 = DatabaseConnection.getConnection().databaseLink.prepareStatement(checkIfItemcopyIsAvailable);
-                PreparedStatement ps1 = JDBCConnection.jdbcConnection().prepareStatement(checkIfItemcopyIsAvailable);
+                PreparedStatement ps1 = getConnection().getDBConnection().prepareStatement(checkIfItemcopyIsAvailable);
                 ResultSet rs1 = ps1.executeQuery();
 
                 if (rs1.next()) {
@@ -111,10 +113,10 @@ public class LoanController {
                     alert.showAndWait();
                 }
 
-                String findBarcodeQuery = "SELECT ItemCopy.barcode, ItemCopy.status, Book.title FROM ItemCopy INNER JOIN Book ON ItemCopy.ISBN = Book.ISBN WHERE ItemCopy.status = 'Available' AND ItemCopy.barcode = '" + searchBarcodeTextField.getText() + "';";
+                String findBarcodeQuery = "SELECT ItemCopy.barcode, ItemCopy.status, Book.title FROM ItemCopy INNER JOIN Book ON ItemCopy.ISBN_ItemCopy = Book.isbn WHERE ItemCopy.status = 0 AND ItemCopy.barcode = '" + searchBarcodeTextField.getText() + "';";
                 System.out.println(findBarcodeQuery);
                 //PreparedStatement preparedStatement = DatabaseConnection.getConnection().databaseLink.prepareStatement(findBarcodeQuery);
-                PreparedStatement preparedStatement = JDBCConnection.jdbcConnection().prepareStatement(findBarcodeQuery);
+                PreparedStatement preparedStatement = getConnection().getDBConnection().prepareStatement(findBarcodeQuery);
                 ResultSet rs2 = preparedStatement.executeQuery();
 
                 while (rs2.next()) {
