@@ -20,6 +20,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import static bookSearch.DatabaseConnection.getConnection;
+
 public class LoanController {
     @FXML
     private Button cancelBtn;
