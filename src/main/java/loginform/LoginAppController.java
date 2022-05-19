@@ -1,20 +1,16 @@
-package loginform;
+package com.example.loginform;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-
 
 import java.io.IOException;
 import java.sql.SQLException;
 
 public class LoginAppController extends LoginApp {
-    @FXML
-    private Label welcomeText;
-
     @FXML
     private TextField loginUsernameTextField;
 
@@ -22,7 +18,10 @@ public class LoginAppController extends LoginApp {
     private PasswordField loginPasswordPasswordField;
 
     @FXML
-    private BorderPane BorderPane1;
+    private Button LoginButton;
+
+    @FXML
+    private Button registerUser;
 
     @FXML
     private void submitButtonAction (ActionEvent event) throws SQLException, IOException {
@@ -42,10 +41,11 @@ public class LoginAppController extends LoginApp {
             passwordAlert.showAndWait();
             return;
         }
-
         String usernameID = loginUsernameTextField.getText();
         String passwordID = loginPasswordPasswordField.getText();
-        SQLLoginCode sqlLoginCode = new SQLLoginCode();
+        SQLCode sqlLoginCode = new SQLCode();
+
+        //Wrong username and password gives the user an error with information.
         boolean flag = sqlLoginCode.validate(usernameID, passwordID);
         if (!flag)
         {
@@ -55,12 +55,23 @@ public class LoginAppController extends LoginApp {
             loginAlert.showAndWait();
         }
         else
+        //Successful login will push the user back to the search page where they can find their books that they wish to borrow.
         {
-            System.out.println(SQLLoginCode.Member());
-            //BorderPane1.getChildren().setAll(FXMLLoader.load("ProfilePage.fxml"));
-            //INSERT CODE HERE TO DIRECT USER TO PROFILE PAGE
+            Scene currentScene = LoginButton.getScene();
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("SEARCHPAGE.fxml"));
+            Parent tempRoot = loader.load();
+            currentScene.setRoot(tempRoot);
         }
         return;
     }
 
-}
+    public void registerUserButton() throws IOException{
+            Scene currentScene = registerUser.getScene();
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("RegisterUser.fxml"));
+            Parent nextScene = loader.load();
+            currentScene.setRoot(nextScene);
+        }
+    }
+
