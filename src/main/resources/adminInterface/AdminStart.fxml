@@ -6,27 +6,31 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="adminInterface.AdminController">
    <children>
-      <Label alignment="CENTER" layoutX="286.0" layoutY="56.0" prefHeight="44.0" prefWidth="131.0" text="Manage " textAlignment="CENTER">
+      <Label alignment="CENTER" layoutX="243.0" layoutY="58.0" prefHeight="44.0" prefWidth="214.0" text="Admin Menu" textAlignment="CENTER">
          <font>
             <Font name="System Bold Italic" size="36.0" />
          </font>
       </Label>
-      <VBox layoutX="301.0" layoutY="130.0" prefHeight="120.0" prefWidth="100.0" spacing="20.0">
+      <VBox layoutX="281.0" layoutY="130.0" prefHeight="194.0" prefWidth="142.0" spacing="20.0">
          <children>
-            <Button fx:id="btnManageBooks" mnemonicParsing="false" onAction="#switchToManageBooks" prefHeight="26.0" prefWidth="114.0" text="Books">
+            <Button fx:id="btnManageBooks" mnemonicParsing="false" onAction="#switchToManageBooks" prefHeight="35.0" prefWidth="145.0" text="Manage books">
                <font>
                   <Font size="18.0" />
                </font>
             </Button>
-            <Button fx:id="btnManageDvds" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="105.0" text="Dvds">
+            <Button fx:id="btnManageDvds" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#switchToManageDvds" prefHeight="35.0" prefWidth="150.0" text="Manage dvds">
                <font>
                   <Font size="18.0" />
                </font>
             </Button>
-            <Button fx:id="btnManageCopies" layoutX="10.0" layoutY="36.0" mnemonicParsing="false" onAction="#switchToManageCopies" prefHeight="26.0" prefWidth="108.0" text="Copies">
+            <Button fx:id="btnManageCopies" layoutX="10.0" layoutY="36.0" mnemonicParsing="false" onAction="#switchToManageCopies" prefHeight="35.0" prefWidth="146.0" text="Manage copies">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+            <Button fx:id="btnOverdueLoans" layoutX="10.0" layoutY="120.0" mnemonicParsing="false" onAction="#switchToOverdueLoans" prefHeight="35.0" prefWidth="146.0" text="Overdue loans">
                <font>
                   <Font size="18.0" />
                </font>

@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ResourceBundle;
 
-import static adminInterface.AdminQueries.copies;
+import static adminInterface.AdminQueries.*;
 import static bookSearch.DatabaseConnection.getConnection;
 
 public class ManageCopiesController extends ManageController{

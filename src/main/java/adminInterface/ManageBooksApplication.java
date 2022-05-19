@@ -15,7 +15,7 @@ public class ManageBooksApplication extends Application {
     public void start(Stage stage) throws IOException {
         Locale.setDefault(new Locale("English", "en"));
         FXMLLoader fxmlLoader = new FXMLLoader(ManageBooksApplication.class.getResource("manageBooks.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 700, 400);
+        Scene scene = new Scene(fxmlLoader.load(), 900, 400);
         stage.setTitle("Manage books");
         stage.setScene(scene);
         stage.show();

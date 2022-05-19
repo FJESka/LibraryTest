@@ -85,6 +85,20 @@ public class ManageBooksController extends ManageController {
 
     }
 
+    public void clearTextfields(){
+        tfBookISBN.clear();
+        tfBookTitle.clear();
+        tfBookAuthor.clear();
+        tfBookKeyword.clear();
+        tfBookLanguage.clear();
+        tfBookPublisher.clear();
+    }
+
+    public String getIsbn(){
+        BookSearch book = mBooksTableview.getSelectionModel().getSelectedItem();
+        String isbn = book.getIsbn();
+        return isbn;
+    }
 
     public ObservableList<BookSearch> getRecords() {
         String bookQuery = "SELECT isbn, title, author, keyword, language, publisher FROM Book";
@@ -156,11 +170,54 @@ public class ManageBooksController extends ManageController {
 
     }
 
-    public void update(){
+    public void update() {
+        try {
+            Statement statement = getConnection().getDBConnection().createStatement();
 
+            String isbn = tfBookISBN.getText();
+            if (isFieldEmpty(isbn) == true) {
+                emptyFieldAlert();
+            } else {
+                String title = tfBookTitle.getText();
+                String author = tfBookAuthor.getText();
+                String keyword = tfBookKeyword.getText();
+                String language = tfBookLanguage.getText();
+                String publisher = tfBookPublisher.getText();
+
+                String isbnBeforeUpdate = getIsbn();
+
+                String update = "UPDATE `Book` SET `isbn` = '" + isbn +"', `title` = '"+ title +"', `author` = '"+ author +"', `keyword` = '"+ keyword +"', `language` = '"+ language +"' WHERE (`isbn` = '" + isbnBeforeUpdate + "');";
+
+                statement.executeUpdate(update);
+            }
+            clearTextfields();
+            showList();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public void delete(){
+        String isbn = tfBookISBN.getText();
+
+        String deleteBook = "DELETE FROM `Book` WHERE (`isbn` = '" + isbn + "');";
+
+        try{
+            Statement statement = getConnection().getDBConnection().createStatement();
+            if(isFieldEmpty(isbn) == true) {
+                emptyFieldAlert();
+            }else{
+                if(confirmationAlert() == true) {
+                    statement.executeUpdate(deleteBook);
+                    clearTextfields();
+                }
+                showList();
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
 
     }
 

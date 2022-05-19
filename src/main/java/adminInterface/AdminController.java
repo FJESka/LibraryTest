@@ -43,4 +43,13 @@ public class AdminController {
         stage.show();
 
     }
+
+    public void switchToOverdueLoans(ActionEvent event) throws IOException {
+        root = FXMLLoader.load(getClass().getResource("overdue.fxml"));
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(root, 900, 400);
+        stage.setScene(scene);
+        stage.show();
+    }
+
 }
