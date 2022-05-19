@@ -93,14 +93,14 @@ public class ItemSearchController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("loan.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 600, 400);
             Stage stage = new Stage();
-            stage.setTitle("Return Item");
+            stage.setTitle("Loan");
             stage.setScene(scene);
+
             stage.show();
 
-            //Provar att lägga till en metod för att visa antal lån och maxgräns för lånen. Inte säker på att det funkar.
+            // Displays max loan limit and current number of loans.
             LoanController loanController = new LoanController();
-            loanController.checkIfAllowedToBorrow();
-
+            loanController.initialize();
 
         }
         if(event.getSource() == btnLogin){
