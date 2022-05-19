@@ -1,27 +1,22 @@
 package adminInterface;
 
-import bookSearch.DatabaseConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import org.w3c.dom.events.MouseEvent;
 
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static adminInterface.AdminQueries.copies;
+import static adminInterface.AdminQueries.*;
 import static bookSearch.DatabaseConnection.getConnection;
 
-public class ManageCopiesController implements Initializable {
+public class ManageCopiesController extends ManageController{
 
     @FXML
     private Button btnDelete;
@@ -71,20 +66,20 @@ public class ManageCopiesController implements Initializable {
     @FXML
     private TextField tfType;
 
-    @FXML
-    public void handleButtonAction(ActionEvent event){
-
-        if(event.getSource() == btnInsert){
-            insert();
-        }
-        if(event.getSource() == btnUpdate){
-            update();
-        }
-        if(event.getSource() == btnDelete){
-            delete();
-        }
-
-    }
+//    @FXML
+//    public void handleButtonAction(ActionEvent event){
+//
+//        if(event.getSource() == btnInsert){
+//            insert();
+//        }
+//        if(event.getSource() == btnUpdate){
+//            update();
+//        }
+//        if(event.getSource() == btnDelete){
+//            delete();
+//        }
+//
+//    }
 
     public void handleMouseAction(javafx.scene.input.MouseEvent mouseEvent) {
         ItemCopies item = mcopiesTableview.getSelectionModel().getSelectedItem();
@@ -108,16 +103,16 @@ public class ManageCopiesController implements Initializable {
         return barcode;
     }
 
-    public boolean confirmationAlert(){
-        Boolean okToDelete = false;
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText("Are you sure you want to delete?");
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK){
-            okToDelete = true;
-        }
-        return okToDelete;
-    }
+//    public boolean confirmationAlert(){
+//        Boolean okToDelete = false;
+//        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+//        alert.setHeaderText("Are you sure you want to delete?");
+//        Optional<ButtonType> result = alert.showAndWait();
+//        if (result.isPresent() && result.get() == ButtonType.OK){
+//            okToDelete = true;
+//        }
+//        return okToDelete;
+//    }
 
 
 //    public Statement getStatement(){
@@ -175,7 +170,7 @@ public class ManageCopiesController implements Initializable {
         mcopiesTableview.setItems(list);
     }
 
-    boolean isBarcodeEmpty(String barcode){
+    boolean isFieldEmpty(String barcode){
         boolean isBarcodeEmpty = false;
         if(barcode.isEmpty() || barcode == null) {
             isBarcodeEmpty = true;
@@ -183,7 +178,7 @@ public class ManageCopiesController implements Initializable {
         return isBarcodeEmpty;
     }
 
-    public void emptyBarcodeAlert(){
+    public void emptyFieldAlert(){
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText("Barcode can't be empty. Please add a barcode or select a row to update.");
         alert.showAndWait();
@@ -202,8 +197,8 @@ public class ManageCopiesController implements Initializable {
             Statement statement = getConnection().getDBConnection().createStatement();
 
             String barcode = tfBarcode.getText();
-            if(isBarcodeEmpty(barcode) == true){
-                emptyBarcodeAlert();
+            if(isFieldEmpty(barcode) == true){
+                emptyFieldAlert();
             }else{
                 int loanPeriod = Integer.parseInt(tfLoanPeriod.getText());
                 String isbn = tfISBN.getText();
@@ -238,8 +233,8 @@ public class ManageCopiesController implements Initializable {
             Statement statement = getConnection().getDBConnection().createStatement();
 
             String barcode = tfBarcode.getText();
-            if(isBarcodeEmpty(barcode) == true) {
-                emptyBarcodeAlert();
+            if(isFieldEmpty(barcode) == true) {
+                emptyFieldAlert();
             }else {
                 int loanPeriod = Integer.parseInt(tfLoanPeriod.getText());
                 String isbn = tfISBN.getText();
@@ -288,8 +283,8 @@ public class ManageCopiesController implements Initializable {
 
         try{
             Statement statement = getConnection().getDBConnection().createStatement();
-            if(isBarcodeEmpty(barcode) == true) {
-                emptyBarcodeAlert();
+            if(isFieldEmpty(barcode) == true) {
+                emptyFieldAlert();
             }else{
                 if(confirmationAlert() == true) {
                     statement.executeUpdate(deleteItemcopy);

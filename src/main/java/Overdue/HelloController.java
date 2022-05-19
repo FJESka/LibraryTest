@@ -39,7 +39,7 @@ public class HelloController implements Initializable  {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        String overdueQuery = "SELECT l.dueDate, l.memberID, b.title FROM Loan l JOIN ItemCopy i ON l.barcode = i.barcode JOIN Book b ON i.ISBN_ItemCopy = b.ISBN_ItemCopy WHERE l.dueDate < current_date UNION SELECT l.dueDate, l.memberID, d.title FROM Loan l JOIN ItemCopy i ON l.barcode = i.barcode JOIN Dvd d ON i.dvdID_ItemCopy = d.dvdID_ItemCopy WHERE l.dueDate < current_date";
+        String overdueQuery = "SELECT l.dueDate, l.memberID, b.title FROM Loan l JOIN ItemCopy i ON l.barcode = i.barcode JOIN Book b ON i.ISBN_ItemCopy = b.isbn WHERE l.dueDate < current_date UNION SELECT l.dueDate, l.memberID, d.title FROM Loan l JOIN ItemCopy i ON l.barcode = i.barcode JOIN Dvd d ON i.dvdID_ItemCopy = d.id WHERE l.dueDate < current_date";
 
 
         try {
