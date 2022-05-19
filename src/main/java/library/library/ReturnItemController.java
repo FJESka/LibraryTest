@@ -19,6 +19,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import static bookSearch.DatabaseConnection.getConnection;
+
 public class ReturnItemController {
 
     @FXML
@@ -57,10 +59,10 @@ public class ReturnItemController {
             String[] currentItemBarcode = returnList.get(i).split(" ");
 
             try {
-                PreparedStatement preparedStatement = JDBCConnection.jdbcConnection().prepareStatement(Queries.ReturnItemUpdateItemQuery(currentItemBarcode));
+                PreparedStatement preparedStatement = getConnection().getDBConnection().prepareStatement(Queries.ReturnItemUpdateItemQuery(currentItemBarcode));
                 preparedStatement.executeUpdate(Queries.ReturnItemUpdateItemQuery(currentItemBarcode));
 
-                PreparedStatement ps = JDBCConnection.jdbcConnection().prepareStatement(Queries.ReturnItemUpdateLoanQuery(currentItemBarcode));
+                PreparedStatement ps = getConnection().getDBConnection().prepareStatement(Queries.ReturnItemUpdateLoanQuery(currentItemBarcode));
                 ps.executeUpdate(Queries.ReturnItemUpdateLoanQuery(currentItemBarcode));
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -74,17 +76,17 @@ public class ReturnItemController {
     // Method to search item and add to listview. Tests if the barcode exists and is possible to return.
     @FXML
     void searchItem(ActionEvent event) throws SQLException {
-        PreparedStatement ps = JDBCConnection.jdbcConnection().prepareStatement(Queries.checkIfBarcodeExistsQuery(searchItemTextField.getText()));
+        PreparedStatement ps = getConnection().getDBConnection().prepareStatement(Queries.checkIfBarcodeExistsQuery(searchItemTextField.getText()));
         ResultSet rs = ps.executeQuery();
 
         if (rs.next()) {
-            PreparedStatement ps1 = JDBCConnection.jdbcConnection().prepareStatement(Queries.checkIfItemcopyIsNotAvailable(searchItemTextField.getText()));
+            PreparedStatement ps1 = getConnection().getDBConnection().prepareStatement(Queries.checkIfItemcopyIsNotAvailable(searchItemTextField.getText()));
             ResultSet rs1 = ps1.executeQuery();
 
             if (rs1.next()) {
                 alertMessage(Alert.AlertType.INFORMATION,"Wrong barcode, the item is not on loan and can not be returned. Try again." );
             }
-            PreparedStatement preparedStatement = JDBCConnection.jdbcConnection().prepareStatement(Queries.findBarcodeQuery(searchItemTextField.getText()));
+            PreparedStatement preparedStatement = getConnection().getDBConnection().prepareStatement(Queries.findBarcodeQuery(searchItemTextField.getText()));
             ResultSet rs2 = preparedStatement.executeQuery();
 
             while (rs2.next()) {

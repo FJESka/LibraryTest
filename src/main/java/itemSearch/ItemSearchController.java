@@ -97,11 +97,6 @@ public class ItemSearchController implements Initializable {
             stage.setScene(scene);
 
             stage.show();
-
-            // Displays max loan limit and current number of loans.
-            LoanController loanController = new LoanController();
-            loanController.initialize();
-
         }
         if(event.getSource() == btnLogin){
             //Lägg in if sats för om användare redan är inloggad så kommer alert/profilsida?

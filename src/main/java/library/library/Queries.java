@@ -17,7 +17,7 @@ public class Queries {
     }
 
     public static String selectLoanQuery(String[] barcodeVariable) {
-        String selectLoanQuery = "SELECT Loan.loanID, Loan.barcode, Loan.memberID, dateOfLoan, dueDate, returnDate, title FROM Loan INNER JOIN ItemCopy ON Loan.barcode = ItemCopy.barcode INNER JOIN Book ON ItemCopy.ISBN_ItemCopy = Book.isbn INNER JOIN Member ON Loan.memberID = Member.memberID WHERE Loan.barcode = " + barcodeVariable[0] + " AND Loan.memberID = 1 AND dateOfLoan >= CURDATE() AND returnDate IS NULL";
+        String selectLoanQuery = "SELECT Loan.loanID, Loan.barcode, Loan.memberID, dateOfLoan, dueDate, returnDate, Book.title FROM Loan INNER JOIN ItemCopy ON Loan.barcode = ItemCopy.barcode INNER JOIN Book ON ItemCopy.ISBN_ItemCopy = Book.isbn INNER JOIN Member ON Loan.memberID = Member.memberID WHERE Loan.barcode = " + barcodeVariable[0] + " AND Loan.memberID = 1 AND dateOfLoan >= CURDATE() AND returnDate IS NULL";
     return selectLoanQuery;
     }
 
@@ -66,10 +66,10 @@ public class Queries {
     }
 
     public static String NoOfLoanQuery(){
-        return "SELECT COUNT(loanID) AS numberOfLoans FROM Loan WHERE memberID = 1 AND returnDate IS NULL;";
+        return "SELECT COUNT(Loan.loanID) AS numberOfLoans FROM Loan WHERE memberID = 1 AND returnDate IS NULL;";
     }
 
     public static String memberAllowedToBorrow(){
-        return "INSERT INTO Member (allowedToBorrow) VALUES (1)  WHERE memberID = 1";
+        return "INSERT INTO Member (allowedToBorrow) VALUES (1) WHERE memberID = 1";
     }
 }
