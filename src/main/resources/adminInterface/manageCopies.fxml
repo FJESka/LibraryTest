@@ -54,5 +54,6 @@
             <TableColumn fx:id="colType" prefWidth="59.0" text="Type" />
         </columns>
       </TableView>
+      <Button fx:id="backToAdminMenu" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#switchBackToAdminStart" text="Back to Admin Menu" />
    </children>
 </AnchorPane>

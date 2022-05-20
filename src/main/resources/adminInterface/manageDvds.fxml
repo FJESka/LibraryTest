@@ -60,5 +60,6 @@
             <TableColumn fx:id="colDvdCountry" prefWidth="57.94537353515625" text="Country" />
         </columns>
       </TableView>
+      <Button fx:id="backToAdminMenu" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#switchBackToAdminStart" text="Back to Admin Menu" />
    </children>
 </AnchorPane>
