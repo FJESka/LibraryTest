@@ -95,7 +95,7 @@ public class ReturnItemController {
                 if (rs2.next()) {
                     if (!returnItemList.getItems().contains(rs2.getString("barcode") + "              " + rs2.getString("title") + "                " + rs2.getString("loanID"))) {
                         returnList.add(rs2.getString("barcode") + "              " + rs2.getString("title") + "                " + rs2.getString("loanID"));
-                        AddItemToReturnList();
+                        addItemToReturnList();
                         searchItemTextField.clear();
                     } else {
                         alertMessage(Alert.AlertType.INFORMATION, "The item is already added to the list!");
@@ -104,7 +104,7 @@ public class ReturnItemController {
                 } else if (rs3.next()){
                     if (!returnItemList.getItems().contains(rs3.getString("barcode") + "             " + rs3.getString("title"))) {
                         returnList.add(rs3.getString("barcode") + "             " + rs3.getString("title"));
-                        AddItemToReturnList();
+                        addItemToReturnList();
                         searchItemTextField.clear();
                     } else {
                         alertMessage(Alert.AlertType.INFORMATION, "The item is already added to the list!");
@@ -143,7 +143,7 @@ public class ReturnItemController {
     }
 
     // Method to add the barcodes to the listview.
-    void AddItemToReturnList() {
+    void addItemToReturnList() {
         ObservableList <String> returnListBarcodes = FXCollections.observableArrayList(returnList);
         returnItemList.setItems(returnListBarcodes);
     }

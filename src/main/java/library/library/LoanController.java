@@ -98,6 +98,7 @@ public class LoanController {
 
                 if (rs1.next()) {
                     alertMessage(Alert.AlertType.INFORMATION, "Wrong barcode, the item is not available. Try again.");
+                    searchBarcodeTextField.clear();
                 }
 
                 PreparedStatement preparedStatement = getConnection().getDBConnection().prepareStatement(Queries.LoanFindBarcodeQuery(searchBarcodeTextField.getText()));
@@ -129,6 +130,7 @@ public class LoanController {
                 alertMessage(Alert.AlertType.INFORMATION, "You need to type in a barcode!");
             } else {
                 alertMessage(Alert.AlertType.INFORMATION, "Wrong barcode, the barcode does not exists. Try again.");
+                searchBarcodeTextField.clear();
             }
         }catch (Exception e){
             e.printStackTrace();
