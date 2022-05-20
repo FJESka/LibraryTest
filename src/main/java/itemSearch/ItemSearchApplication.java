@@ -7,11 +7,13 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Locale;
 
 public class ItemSearchApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        Locale.setDefault(new Locale("English", "en"));
         Parent root = FXMLLoader.load(getClass().getResource("itemSearchLibraryTest.fxml"));
         Scene scene = new Scene(root, 1280, 720);
         stage.setTitle("Item - Search");

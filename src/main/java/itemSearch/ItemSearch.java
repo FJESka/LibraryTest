@@ -13,6 +13,7 @@ public class ItemSearch {
     Integer totalCopies;
     Integer available;
 
+    //ItemSearch constructor
     public ItemSearch(String isbn, String title, String author, String keyword, String language, String publisher, String actors, String ageRestriction, String country, Integer totalCopies, Integer available) {
 
         this.isbn = isbn;

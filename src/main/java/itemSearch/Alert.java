@@ -1,11 +1,12 @@
-package adminInterface;
+package itemSearch;
 
 import javafx.scene.control.ButtonType;
 
 import java.util.Optional;
 
-public class Warning {
+public class Alert {
 
+    //metod för att skapa en alert
     public void alertMessage(javafx.scene.control.Alert.AlertType alertType, String message) {
         javafx.scene.control.Alert alert = new javafx.scene.control.Alert(alertType);
         alert.setHeaderText(null);
@@ -13,6 +14,7 @@ public class Warning {
         alert.showAndWait();
     }
 
+    //metod för att skapa en alert med confirmation
     public boolean alertConfirmation(String message) {
         Boolean okPressed = false;
         javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION);

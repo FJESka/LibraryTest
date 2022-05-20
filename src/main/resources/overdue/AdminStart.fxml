@@ -30,7 +30,7 @@
                   <Font size="18.0" />
                </font>
             </Button>
-            <Button fx:id="btnOverdueLoans" layoutX="10.0" layoutY="120.0" mnemonicParsing="false" onAction="#switchToOverdueLoans" prefHeight="35.0" prefWidth="146.0" text="Overdue loans">
+            <Button fx:id="btnOverdueLoans" layoutX="10.0" layoutY="120.0" mnemonicParsing="false" onAction="#switchToOverdueLoans" prefHeight="35.0" prefWidth="146.0" text="overdue loans">
                <font>
                   <Font size="18.0" />
                </font>

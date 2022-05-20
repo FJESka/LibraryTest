@@ -12,39 +12,30 @@ import java.sql.Statement;
 import java.util.regex.Pattern;
 
 import static adminInterface.AdminQueries.*;
-import static bookSearch.DatabaseConnection.getConnection;
+import static databaseConnection.DatabaseConnection.getConnection;
 
 public class ManageCopiesController extends ManageController{
 
     @FXML
-    private Button btnDelete;
+    private TableColumn<ItemCopy, String> colBarcode;
 
     @FXML
-    private Button btnInsert;
+    private TableColumn<ItemCopy, Integer> colDvdID;
 
     @FXML
-    private Button btnUpdate;
+    private TableColumn<ItemCopy, String> colISBN;
 
     @FXML
-    private TableColumn<ItemCopies, String> colBarcode;
+    private TableColumn<ItemCopy, Integer> colLoanPeriod;
 
     @FXML
-    private TableColumn<ItemCopies, Integer> colDvdID;
+    private TableColumn<ItemCopy, Integer> colStatus;
 
     @FXML
-    private TableColumn<ItemCopies, String> colISBN;
+    private TableColumn<ItemCopy, String> colType;
 
     @FXML
-    private TableColumn<ItemCopies, Integer> colLoanPeriod;
-
-    @FXML
-    private TableColumn<ItemCopies, Integer> colStatus;
-
-    @FXML
-    private TableColumn<ItemCopies, String> colType;
-
-    @FXML
-    private TableView<ItemCopies> mcopiesTableview;
+    private TableView<ItemCopy> mcopiesTableview;
 
     @FXML
     private TextField tfBarcode;
@@ -64,8 +55,9 @@ public class ManageCopiesController extends ManageController{
     @FXML
     private TextField tfType;
 
+    //Hanterar val i tableview och sätter textfält till value av det valda objektet
     public void handleMouseAction(javafx.scene.input.MouseEvent mouseEvent) {
-        ItemCopies item = mcopiesTableview.getSelectionModel().getSelectedItem();
+        ItemCopy item = mcopiesTableview.getSelectionModel().getSelectedItem();
         tfBarcode.setText(item.getBarcode());
         tfISBN.setText(item.getIsbn());
         tfLoanPeriod.setText("" +item.getLoanPeriod());
@@ -81,11 +73,12 @@ public class ManageCopiesController extends ManageController{
     }
 
     public String getBarcode(){
-        ItemCopies item = mcopiesTableview.getSelectionModel().getSelectedItem();
+        ItemCopy item = mcopiesTableview.getSelectionModel().getSelectedItem();
         String barcode = item.getBarcode();
         return barcode;
     }
 
+    //Rensar alla textfält
     public void clearTextfields(){
         tfBarcode.clear();
         tfISBN.clear();
@@ -95,9 +88,9 @@ public class ManageCopiesController extends ManageController{
         tfType.clear();
     }
 
-
-    public ObservableList<ItemCopies> getRecords(){
-        ObservableList<ItemCopies> itemCopiesObservableList = FXCollections.observableArrayList();
+    //Kör sökquery och lägger resultaten i en lista
+    public ObservableList<ItemCopy> getRecords(){
+        ObservableList<ItemCopy> itemCopyObservableList = FXCollections.observableArrayList();
         try {
             Statement statement = getConnection().getDBConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(copies);
@@ -111,7 +104,7 @@ public class ManageCopiesController extends ManageController{
                 String qType = resultSet.getString("copyTypeName");
 
                 //Populate the observableList with results from our SQL Query
-                itemCopiesObservableList.add(new ItemCopies(qBarcode,qLoanPeriod, qDvdID, qISBN, qType, qStatus));
+                itemCopyObservableList.add(new ItemCopy(qBarcode,qLoanPeriod, qDvdID, qISBN, qType, qStatus));
 
             }
 
@@ -119,80 +112,49 @@ public class ManageCopiesController extends ManageController{
             e.printStackTrace();
         }
 
-        return itemCopiesObservableList;
+        return itemCopyObservableList;
 
     }
 
-    void showList(){
-        ObservableList<ItemCopies> list = getRecords();
+    //sätter värdena i tableviews fält och tableview
+    public void showList(){
+        ObservableList<ItemCopy> list = getRecords();
         // Sets values in the table columns
-        colBarcode.setCellValueFactory(new PropertyValueFactory<ItemCopies, String>("barcode"));
-        colDvdID.setCellValueFactory(new PropertyValueFactory<ItemCopies, Integer>("dvdID"));
-        colISBN.setCellValueFactory(new PropertyValueFactory<ItemCopies, String>("isbn"));
-        colLoanPeriod.setCellValueFactory(new PropertyValueFactory<ItemCopies, Integer>("loanPeriod"));
-        colStatus.setCellValueFactory(new PropertyValueFactory<ItemCopies, Integer>("status"));
-        colType.setCellValueFactory(new PropertyValueFactory<ItemCopies, String>("copyType"));
+        colBarcode.setCellValueFactory(new PropertyValueFactory<ItemCopy, String>("barcode"));
+        colDvdID.setCellValueFactory(new PropertyValueFactory<ItemCopy, Integer>("dvdID"));
+        colISBN.setCellValueFactory(new PropertyValueFactory<ItemCopy, String>("isbn"));
+        colLoanPeriod.setCellValueFactory(new PropertyValueFactory<ItemCopy, Integer>("loanPeriod"));
+        colStatus.setCellValueFactory(new PropertyValueFactory<ItemCopy, Integer>("status"));
+        colType.setCellValueFactory(new PropertyValueFactory<ItemCopy, String>("copyType"));
 
         //sets the results from SQL Query to the table view
         mcopiesTableview.setItems(list);
     }
 
-    public boolean doesISBNExistInDatabase(String isbn) throws SQLException {
-        boolean isbnExists = false;
-        Statement statement = getConnection().getDBConnection().createStatement();
-
-        String query = doesISBNExist(isbn);
-        ResultSet resultSet = statement.executeQuery(query);
-        String resultISBN = null;
-
-        if(resultSet.next()){
-            resultISBN = resultSet.getString("isbn");
-        }
-        if(isbn.equalsIgnoreCase(resultISBN)){
-            isbnExists = true;
-        }
-        else{
-            isbnExists = false;
-        }
-        return isbnExists;
-    }
-
-    public boolean doesDvdIDExistInDatabase(int dvdID) throws SQLException {
-        boolean dvdIDExists = false;
-        Statement statement = getConnection().getDBConnection().createStatement();
-
-        String query = doesDvdIDExist(String.valueOf(dvdID));
-        ResultSet resultSet = statement.executeQuery(query);
-        int resultDvdID = 0;
-
-        if(resultSet.next()){
-            resultDvdID = resultSet.getInt("id");
-        }
-        if(dvdID != 0 && dvdID == resultDvdID){
-            dvdIDExists = true;
-        }
-        else{
-            dvdIDExists = false;
-        }
-        return dvdIDExists;
-    }
-
-    public void areFieldsEmpty() {
+    //kollar om textfält är tomma, om de är tomma skapas en alert
+    public boolean areFieldsEmpty() {
+        boolean fieldsEmpty = false;
         if (isFieldEmpty(tfBarcode.getText()) == true) {
             String field = "Barcode";
             emptyFieldAlert(field);
+            fieldsEmpty = true;
         } else if (isFieldEmpty(tfLoanPeriod.getText()) == true) {
             String field = "Loan period";
             emptyFieldAlert(field);
+            fieldsEmpty = true;
         } else if (isFieldEmpty(tfStatus.getText()) == true) {
             String field = "Status";
             emptyFieldAlert(field);
+            fieldsEmpty = true;
         } else if (isFieldEmpty(tfType.getText()) == true) {
             String field = "Type";
             emptyFieldAlert(field);
+            fieldsEmpty = true;
         }
+        return fieldsEmpty;
     }
 
+    //kollar så att de attribut som är integers får rätt input i textfälten
     public String areInputsCorrect(){
         String feedback = "";
         if((Pattern.matches("[a-zA-Z]+", tfDvdID.getText()) == true)){
@@ -209,13 +171,28 @@ public class ManageCopiesController extends ManageController{
         return feedback;
     }
 
+    //kollar så att de attribut som är integers får rätt input i textfälten, om inte skapas en alert
+    public boolean inputsCorrect(){
+        boolean inputsCorrect = false;
+        String feedback = areInputsCorrect();
+        if(feedback.isEmpty()){
+            inputsCorrect = true;
+        }
+        else{
+            Alert alert = new Alert();
+            alert.alertMessage(javafx.scene.control.Alert.AlertType.INFORMATION, areInputsCorrect());
+        }
+        return inputsCorrect;
+    }
+
+    //Kollar om foreignkey värden som användaren försöker ange finns i databasen
     public boolean doValuesExistInDatabase() throws SQLException {
         boolean valuesExist = true;
         if (tfISBN.getText() != null && tfISBN.getText().isBlank() != true) {
             if (doesISBNExistInDatabase(tfISBN.getText()) != true) {
-                Warning a = new Warning();
+                Alert a = new Alert();
                 String message = "The title doesn't exist in the database.\nPlease add the title to the database before adding copies.";
-                a.alertMessage(Alert.AlertType.INFORMATION, message);
+                a.alertMessage(javafx.scene.control.Alert.AlertType.INFORMATION, message);
                 valuesExist = false;
             }
             else{
@@ -224,9 +201,9 @@ public class ManageCopiesController extends ManageController{
         } else if (tfDvdID.getText() != null && tfDvdID.getText().isBlank() != true) {
             int dvdID = Integer.parseInt(tfDvdID.getText());
             if (doesDvdIDExistInDatabase(dvdID) != true) {
-                Warning a = new Warning();
+                Alert a = new Alert();
                 String message = "The title doesn't exist in the database.\nPlease add the title to the database before adding copies.";
-                a.alertMessage(Alert.AlertType.INFORMATION, message);
+                a.alertMessage(javafx.scene.control.Alert.AlertType.INFORMATION, message);
                 valuesExist = false;
             }
             else{
@@ -236,6 +213,7 @@ public class ManageCopiesController extends ManageController{
         return valuesExist;
     }
 
+    //kollar om barcode redan finns i databasen och skapar en alert om den gör det
     public boolean doesBarcodeExistAlready(String barcode) throws SQLException {
         boolean barcodeExists = false;
         Statement statement = getConnection().getDBConnection().createStatement();
@@ -250,9 +228,9 @@ public class ManageCopiesController extends ManageController{
 
         if(resultBarcode != null && barcode.trim().replaceAll(" ", "").equalsIgnoreCase(resultBarcode.replaceAll(" ", ""))){
             barcodeExists = true;
-            Warning warning = new Warning();
+            Alert alert = new Alert();
             String message = "Barcode exists already.";
-            warning.alertMessage(Alert.AlertType.INFORMATION, message);
+            alert.alertMessage(javafx.scene.control.Alert.AlertType.INFORMATION, message);
         }
         else{
             barcodeExists = false;
@@ -261,16 +239,15 @@ public class ManageCopiesController extends ManageController{
     }
 
 
+    //hämtar values från användarens input och returnerar rätt query beroende på vilken knapp användaren tryckt på
     public String getValuesAndQuery (String whichQuery) throws SQLException {
-            String query = null;
-            String retrieveQuery = null;
+        String query = null;
+        String retrieveQuery = null;
 
-            areFieldsEmpty();
-            if(areInputsCorrect().isBlank() != true){
-                Warning warning = new Warning();
-                warning.alertMessage(Alert.AlertType.INFORMATION, areInputsCorrect());
-            }
+        areFieldsEmpty();
+        if (areFieldsEmpty() == true && inputsCorrect() != true) {
 
+        } else {
             String barcode = tfBarcode.getText();
             int loanPeriod = Integer.parseInt(tfLoanPeriod.getText());
             String isbn = tfISBN.getText();
@@ -280,18 +257,17 @@ public class ManageCopiesController extends ManageController{
 
             if (whichQuery.equalsIgnoreCase("insert")) {
 
+                if (tfDvdID.getText().isEmpty() || tfDvdID.getText() == null) {
+                    query = getCopiesInsertDvdNull(barcode, loanPeriod, isbn, type, status);
+                } else if (tfISBN.getText().isEmpty() || tfISBN.getText() == null) {
+                    dvdID = Integer.valueOf(tfDvdID.getText().trim());
+                    query = getCopiesInsertISBNNull(barcode, loanPeriod, dvdID, type, status);
+                } else {
+                    Alert a = new Alert();
+                    String message = "A copy can't be both a book and a dvd.";
+                    a.alertMessage(javafx.scene.control.Alert.AlertType.INFORMATION, message);
 
-                    if (tfDvdID.getText().isEmpty() || tfDvdID.getText() == null) {
-                        query = getCopiesInsertDvdNull(barcode, loanPeriod, isbn, type, status);
-                    } else if (tfISBN.getText().isEmpty() || tfISBN.getText() == null) {
-                        dvdID = Integer.valueOf(tfDvdID.getText().trim());
-                        query = getCopiesInsertISBNNull(barcode, loanPeriod, dvdID, type, status);
-                    } else {
-                        Warning a = new Warning();
-                        String message = "A copy can't be both a book and a dvd.";
-                        a.alertMessage(javafx.scene.control.Alert.AlertType.INFORMATION, message);
-
-                    }
+                }
 
             } else if (whichQuery.equalsIgnoreCase("update")) {
                 String textBarcode = getBarcode();
@@ -308,20 +284,20 @@ public class ManageCopiesController extends ManageController{
                 } else if (tfISBN.getText() == null) {
                     query = getCopiesUpdateISBNNull(barcode, loanPeriod, dvdID, type, status, textBarcode);
                 } else {
-                    Warning a = new Warning();
+                    Alert a = new Alert();
                     String message = "A copy can't be both a book and a dvd.";
                     a.alertMessage(javafx.scene.control.Alert.AlertType.INFORMATION, message);
-
-                    //Lägg en alert "ett item kan inte vara både en bok och en dvd"
                 }
 
             } else {
                 query = getCopiesDelete(barcode);
             }
+        }
 
         return query;
     }
 
+    //Metoden för att göra insert, körs när användaren trycker på insert knappen
     public void insert(){
 
         try {
@@ -329,31 +305,9 @@ public class ManageCopiesController extends ManageController{
             String whichQuery = "insert";
             String query = getValuesAndQuery(whichQuery);
 
-            if(query != null && doValuesExistInDatabase() && !doesBarcodeExistAlready(tfBarcode.getText())) {
+            if(query != null && doValuesExistInDatabase() && !doesBarcodeExistAlready(tfBarcode.getText()) && areFieldsEmpty() == false) {
                 statement.executeUpdate(query);
             }
-//            String barcode = tfBarcode.getText();
-//            if(isFieldEmpty(barcode) == true){
-//                emptyFieldAlert();
-//            }else{
-//                int loanPeriod = Integer.parseInt(tfLoanPeriod.getText());
-//                String isbn = tfISBN.getText();
-//                int status = Integer.parseInt(tfStatus.getText());
-//                String type = tfType.getText();
-//                Integer dvdID = Integer.valueOf(tfDvdID.getText());
-//                String queryDvdisNull = "INSERT INTO `ItemCopy` (`barcode`, `loanPeriod`, `ISBN_ItemCopy`, `copyTypeName`, `status`) VALUES (' " + barcode + "', ' " + loanPeriod + " ', '" + isbn + "', '" + type + "', '" + status + "');";
-//                String query = "INSERT INTO `ItemCopy` (`barcode`, `loanPeriod`, `ISBN_ItemCopy`, `dvdID_ItemCopy`, `copyTypeName`, `status`) VALUES (' " + barcode + "', ' " + loanPeriod + " ', '" + isbn + "', '" + dvdID + "', '" + type + "', '" + status + "');";
-//                String queryISBNisNull = "INSERT INTO `ItemCopy` (`barcode`, `loanPeriod`, `dvdID_ItemCopy`, `copyTypeName`, `status`) VALUES (' " + barcode + "', ' " + loanPeriod + " ', '" + dvdID + "', '" + type + "', '" + status + "');";
-//
-//                if (tfDvdID.getText().isEmpty() || tfDvdID.getText() == null) {
-//                    statement.executeUpdate(queryDvdisNull);
-//                } else if (tfISBN.getText().isEmpty() || tfISBN.getText() == null){
-//                    statement.executeUpdate(queryISBNisNull);
-//                } else{
-//                    statement.executeUpdate(query);
-//                }
-//
-//            }
             clearTextfields();
             showList();
 
@@ -364,48 +318,16 @@ public class ManageCopiesController extends ManageController{
         }
     }
 
+    //Metoden för att göra update, körs när användaren trycker på update knappen
     public void update(){
 
         try{
             Statement statement = getConnection().getDBConnection().createStatement();
             String whichQuery = "update";
             String query = getValuesAndQuery(whichQuery);
-            if(query != null && doValuesExistInDatabase() && !doesBarcodeExistAlready(tfBarcode.getText())){
+            if(query != null && doValuesExistInDatabase() && !doesBarcodeExistAlready(tfBarcode.getText()) && areFieldsEmpty() == false){
                 statement.executeUpdate(query);
             }
-
-//            String barcode = tfBarcode.getText();
-//            if(isFieldEmpty(barcode) == true) {
-//                emptyFieldAlert();
-//            }else {
-//                int loanPeriod = Integer.parseInt(tfLoanPeriod.getText());
-//                String isbn = tfISBN.getText();
-//                int status = Integer.parseInt(tfStatus.getText());
-//                String type = tfType.getText();
-//                Integer dvdID = null;
-//
-//                if (tfDvdID.getText().isBlank()){
-//                    tfDvdID.clear();
-//                }else{
-//                    dvdID = Integer.valueOf(tfDvdID.getText());
-//                }
-//
-//                String textBarcode = getBarcode();
-//                String updateDvdisNull = "UPDATE `ItemCopy` SET `barcode` = '" +barcode + "' , `loanPeriod` = '"+loanPeriod +"', `ISBN_ItemCopy` = '" + isbn + "', `copyTypeName` = '" + type + "', `status` = '" + status+ "' WHERE (`barcode` = '" + textBarcode + "');";
-////            String update = "UPDATE `ItemCopy` SET `barcode` = '" + barcode + "', `loanPeriod` = '" + loanPeriod + "', `ISBN_ItemCopy` = '" + isbn + "', `dvdID_ItemCopy` = '" + dvdID + "', `copyTypeName` = '"+ type +"', `status` = '" + status + "' WHERE (`barcode` = '" + barcode + "')";
-//                String updateISBNisNull = "UPDATE `ItemCopy` SET `barcode` = '" +barcode + "' , `loanPeriod` = '"+loanPeriod +"', `dvdID_ItemCopy` = '"+ dvdID + "', `copyTypeName` = '" + type + "', `status` = '" + status+ "' WHERE (`barcode` = '" + textBarcode + "');";
-//
-//                String update = "UPDATE `ItemCopy` SET `barcode` = '" +barcode + "' , `loanPeriod` = '"+loanPeriod +"', `ISBN_ItemCopy` = '" + isbn + "', `dvdID_ItemCopy` = '"+ dvdID + "', `copyTypeName` = '" + type + "', `status` = '" + status+ "' WHERE (`barcode` = '" + textBarcode + "');";
-//
-//                if (tfDvdID.getText().isBlank() || tfDvdID.getText() == null) {
-//                    tfDvdID.clear();
-//                    statement.executeUpdate(updateDvdisNull);
-//                } else if (tfISBN.getText() == null){
-//                    statement.executeUpdate(updateISBNisNull);
-//                } else{
-//                    //Lägg en alert "ett item kan inte vara både en bok och en dvd"
-//                    statement.executeUpdate(update);
-//                }
 
             clearTextfields();
             showList();
@@ -418,10 +340,9 @@ public class ManageCopiesController extends ManageController{
 
     }
 
+    //Metoden för att göra delete, körs när användaren trycker på delet knappen.
+    //Skapar en confirmation alert innan delete querien körs för att kolla så användaren är säker på att de vill delete.
     public void delete(){
-//        String barcode = tfBarcode.getText();
-//
-//        String deleteItemcopy = "DELETE FROM `ItemCopy` WHERE (`barcode` = '" + barcode + "');";
 
         try{
             Statement statement = getConnection().getDBConnection().createStatement();

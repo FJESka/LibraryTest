@@ -1,6 +1,6 @@
-package bookSearch;
+package adminInterface;
 
-public class BookSearch {
+public class Book {
     String isbn;
     String title;
     String author;
@@ -8,7 +8,8 @@ public class BookSearch {
     String language;
     String publisher;
 
-    public BookSearch(String isbn,String title, String author, String keyword, String language, String publisher) {
+    //book constructor
+    public Book(String isbn, String title, String author, String keyword, String language, String publisher) {
         this.isbn = isbn;
         this.title = title;
         this.author = author;

@@ -1,6 +1,6 @@
 package adminInterface;
 
-public class ItemCopies {
+public class ItemCopy {
 
     String barcode;
     int loanPeriod;
@@ -9,7 +9,8 @@ public class ItemCopies {
     String copyType;
     int status;
 
-    public ItemCopies(String barcode, int loanPeriod, Integer dvdID, String isbn, String copyType, int status) {
+    //ItemCopy constructor
+    public ItemCopy(String barcode, int loanPeriod, Integer dvdID, String isbn, String copyType, int status) {
 
         this.barcode = barcode;
         this.loanPeriod = loanPeriod;

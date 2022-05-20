@@ -14,12 +14,15 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static bookSearch.DatabaseConnection.getConnection;
+import static databaseConnection.DatabaseConnection.getConnection;
+import static adminInterface.AdminQueries.doesDvdIDExist;
+import static adminInterface.AdminQueries.doesISBNExist;
 
 public class ManageController implements Initializable {
 
@@ -32,12 +35,14 @@ public class ManageController implements Initializable {
     @FXML
     private Button btnUpdate;
 
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         showList();
     }
 
     @FXML
+
     public void handleButtonAction(ActionEvent event){
 
         if(event.getSource() == btnInsert){
@@ -52,11 +57,8 @@ public class ManageController implements Initializable {
 
     }
 
-    public void handleMouseAction(javafx.scene.input.MouseEvent mouseEvent) {
 
-
-    }
-
+    //skapar en alert som frågar om du är säker på att du vill radera
     public boolean confirmationAlert(){
         Boolean okToDelete = false;
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -68,14 +70,13 @@ public class ManageController implements Initializable {
         return okToDelete;
     }
 
+    //Rensar alla textfält
     public void clearTextfields(){
 
     }
 
-    void showList(){
 
-    }
-
+    //kollar om fält är tomt
     boolean isFieldEmpty(String string){
         boolean isFieldEmpty = false;
         if(string.isEmpty() || string == null) {
@@ -84,56 +85,15 @@ public class ManageController implements Initializable {
         return isFieldEmpty;
     }
 
+    //skapar en alert som säger att textfält är tomt
     public void emptyFieldAlert(String field){
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText(field + " can't be empty. Please add a " + field + " or select a row to update.");
         alert.showAndWait();
     }
 
-    public void insert(){
 
-        try {
-            Statement statement = getConnection().getDBConnection().createStatement();
-
-            showList();
-
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-
-        }
-    }
-
-    public void update(){
-
-        try{
-            Statement statement = getConnection().getDBConnection().createStatement();
-
-            clearTextfields();
-            showList();
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-
-        }
-
-    }
-
-    public void delete(){
-
-        try{
-            Statement statement = getConnection().getDBConnection().createStatement();
-
-            showList();
-
-
-        }catch(SQLException e){
-            e.printStackTrace();
-        }
-
-
-    }
-
+    //buter tillbaka till admin startsida
     public void switchBackToAdminStart(ActionEvent event) throws IOException {
         Parent root;
         Stage stage;
@@ -146,5 +106,62 @@ public class ManageController implements Initializable {
         stage.show();
     }
 
+    //Kollar om isbn finns i databasen redan
+    public boolean doesISBNExistInDatabase(String isbn) throws SQLException {
+        boolean isbnExists = false;
+        Statement statement = getConnection().getDBConnection().createStatement();
+
+        String query = doesISBNExist(isbn);
+        ResultSet resultSet = statement.executeQuery(query);
+        String resultISBN = null;
+
+        if(resultSet.next()){
+            resultISBN = resultSet.getString("isbn");
+        }
+        if(isbn.equalsIgnoreCase(resultISBN)){
+            isbnExists = true;
+        }
+        else{
+            isbnExists = false;
+        }
+        return isbnExists;
+    }
+
+    //Kollar om dvdID finns i databasen redan
+    public boolean doesDvdIDExistInDatabase(int dvdID) throws SQLException {
+        boolean dvdIDExists = false;
+        Statement statement = getConnection().getDBConnection().createStatement();
+
+        String query = doesDvdIDExist(String.valueOf(dvdID));
+        ResultSet resultSet = statement.executeQuery(query);
+        int resultDvdID = 0;
+
+        if(resultSet.next()){
+            resultDvdID = resultSet.getInt("id");
+        }
+        if(dvdID != 0 && dvdID == resultDvdID){
+            dvdIDExists = true;
+        }
+        else{
+            dvdIDExists = false;
+        }
+        return dvdIDExists;
+    }
+
+    public void insert(){
+
+    }
+
+    public void update(){
+
+    }
+
+    public void delete(){
+
+    }
+
+    public void showList(){
+
+    }
 }
 

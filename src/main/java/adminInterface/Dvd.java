@@ -10,6 +10,7 @@ public class Dvd {
     private String ageRestriction;
     private String country;
 
+    //dvd constructor
     public Dvd(int dvdID, String title, String director, String genre, String language, String actors, String ageRestriction, String country) {
         this.dvdID = dvdID;
         this.title = title;

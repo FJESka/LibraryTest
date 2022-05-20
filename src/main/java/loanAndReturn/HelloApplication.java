@@ -1,4 +1,4 @@
-package bookSearch;
+package loanAndReturn;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -7,12 +7,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class BookSearchApplication extends Application {
+public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(BookSearchApplication.class.getResource("searchFX2.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1080, 600);
-        stage.setTitle("Book - Search");
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("returnItem.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+        stage.setTitle("Return Item");
         stage.setScene(scene);
         stage.show();
     }

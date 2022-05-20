@@ -12,8 +12,8 @@ module library.library {
     requires com.almasb.fxgl.all;
     requires java.sql;
 
-    opens library.library to javafx.fxml;
-    exports library.library;
+    opens loanAndReturn to javafx.fxml;
+    exports loanAndReturn;
 
     opens itemSearch to javafx.fxml;
     exports itemSearch;
@@ -24,10 +24,10 @@ module library.library {
     opens loginform to javafx.fxml;
     exports loginform;
 
-    opens bookSearch to javafx.fxml;
-    exports bookSearch;
+    opens overdue to javafx.fxml;
+    exports overdue;
 
-    opens Overdue to javafx.fxml;
-    exports Overdue;
+    exports databaseConnection;
+    opens databaseConnection to javafx.fxml;
 
 }
