@@ -26,6 +26,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static bookSearch.DatabaseConnection.getConnection;
+
 public class ItemSearchController implements Initializable {
 
     @FXML
@@ -82,16 +84,16 @@ public class ItemSearchController implements Initializable {
     ObservableList<ItemSearch> itemSearchObservableList = FXCollections.observableArrayList();
 
     @FXML
-    public void buttonAction(ActionEvent event) throws IOException {
+    public void buttonAction(ActionEvent event) throws IOException, SQLException {
         if(event.getSource() == btnAdminView){
             //Kontroll på om användare är inloggad och om de är en admin?
-//            if(SQLLoginCode.Member() != null && SQLLoginCode.Type().equalsIgnoreCase("admin"))
+            if(SQLLoginCode.Member() != null && memberType(SQLLoginCode.Member()).equalsIgnoreCase("admin"))
             Scenes.adminPage();
-//            else{
-//                Warnings a = new Warnings();
-//                String message = "Only administrators can access this view.";
-//                a.alertMessage(Alert.AlertType.INFORMATION, message);
-//            }
+            else{
+                Warnings a = new Warnings();
+                String message = "Only administrators can access this view.";
+                a.alertMessage(Alert.AlertType.INFORMATION, message);
+            }
 
         }
 
@@ -127,25 +129,6 @@ public class ItemSearchController implements Initializable {
         }
     }
 
-//    @FXML
-//    public void loanPage(ActionEvent event) throws IOException {
-//        if(SQLLoginCode.Member() != null){
-//            Parent root = FXMLLoader.load(getClass().getResource("loan2.fxml"));
-//            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-//            Scene scene = new Scene(root);
-//            stage.setScene(scene);
-//            stage.show();
-//
-//        }else{
-//            Warnings a = new Warnings();
-//            String message = "You need to be logged in to loan.";
-//            if(a.alertConfirmation(message) == true){
-//                Scenes.loginPage();
-//            }
-//
-//        }
-//
-//    }
 
     @Override
    public void initialize(URL url, ResourceBundle resource) {
@@ -236,5 +219,18 @@ public class ItemSearchController implements Initializable {
 
         }
 
+    }
+
+    public String memberType(int memberID) throws SQLException {
+        Statement statement = getConnection().getDBConnection().createStatement();
+
+        String query = ItemSearchQueries.getMemberType(memberID);
+        ResultSet resultSet = statement.executeQuery(query);
+        String result = null;
+
+        if(resultSet.next()){
+            result = resultSet.getString("memberType");
+        }
+        return result;
     }
 }

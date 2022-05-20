@@ -35,4 +35,10 @@ public class ItemSearchQueries {
             "on d.id = i.dvdID_ItemCopy\n" +
             "GROUP by dvdID_ItemCopy;\n";
 
+    static String getMemberType(int memberID){
+        String getMemberType = "SELECT memberType FROM Member WHERE memberID = " + memberID +";";
+        return getMemberType;
+    }
+
+
 }
