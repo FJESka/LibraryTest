@@ -7,7 +7,7 @@ public class Queries {
             "SELECT l.loanID, i.barcode, i.status, d.title FROM Loan l JOIN ItemCopy i on l.barcode = i.barcode JOIN Member m on l.memberID = m.memberID JOIN Dvd d on i.dvdID_ItemCopy = d.id;\n";
 
     public static String insertLoanQuery(String[] barcodeVariable){
-        String insertLoanQuery = "INSERT INTO Loan (barcode, memberID, dateOfLoan, dueDate) VALUES (" + barcodeVariable[0] + ", 2, NOW(), (SELECT CURDATE() + INTERVAL (SELECT loanPeriod FROM ItemCopy WHERE barcode = " + barcodeVariable[0] + ")DAY ))";
+        String insertLoanQuery = "INSERT INTO Loan (barcode, memberID, dateOfLoan, dueDate) VALUES (" + barcodeVariable[0] + ", " + loginform.SQLLoginCode.Member() + ", NOW(), (SELECT CURDATE() + INTERVAL (SELECT loanPeriod FROM ItemCopy WHERE barcode = " + barcodeVariable[0] + ")DAY ))";
     return insertLoanQuery;
     }
 
@@ -17,7 +17,7 @@ public class Queries {
     }
 
     public static String selectLoanQuery(String[] barcodeVariable) {
-        String selectLoanQuery = "SELECT Loan.loanID, Loan.barcode, Loan.memberID, dateOfLoan, dueDate, returnDate, Book.title FROM Loan INNER JOIN ItemCopy ON Loan.barcode = ItemCopy.barcode INNER JOIN Book ON ItemCopy.ISBN_ItemCopy = Book.isbn INNER JOIN Member ON Loan.memberID = Member.memberID WHERE Loan.barcode = " + barcodeVariable[0] + " AND Loan.memberID = 2 AND dateOfLoan >= CURDATE() AND returnDate IS NULL";
+        String selectLoanQuery = "SELECT Loan.loanID, Loan.barcode, Loan.memberID, dateOfLoan, dueDate, returnDate, Book.title FROM Loan INNER JOIN ItemCopy ON Loan.barcode = ItemCopy.barcode INNER JOIN Book ON ItemCopy.ISBN_ItemCopy = Book.isbn INNER JOIN Member ON Loan.memberID = Member.memberID WHERE Loan.barcode = " + barcodeVariable[0] + " AND Loan.memberID = " + loginform.SQLLoginCode.Member() + " AND dateOfLoan >= CURDATE() AND returnDate IS NULL";
     return selectLoanQuery;
     }
 
@@ -72,14 +72,14 @@ public class Queries {
     }
 
     public static String maxLoanLimitQuery(){
-        return "SELECT maxLoanLimit FROM Member WHERE memberID = 2";
+        return "SELECT maxLoanLimit FROM Member WHERE memberID = " + loginform.SQLLoginCode.Member() + ";";
     }
 
     public static String NoOfLoanQuery(){
-        return "SELECT COUNT(Loan.loanID) AS numberOfLoans FROM Loan WHERE memberID = 2 AND returnDate IS NULL;";
+        return "SELECT COUNT(Loan.loanID) AS numberOfLoans FROM Loan WHERE memberID = " + loginform.SQLLoginCode.Member() + " AND returnDate IS NULL;";
     }
 
     public static String memberAllowedToBorrow(){
-        return "INSERT INTO Member (allowedToBorrow) VALUES (1) WHERE memberID = 2";
+        return "INSERT INTO Member (allowedToBorrow) VALUES (1) WHERE memberID = " + loginform.SQLLoginCode.Member() + ";";
     }
 }
