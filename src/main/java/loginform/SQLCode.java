@@ -1,4 +1,4 @@
-package loginform;
+package com.example.loginform;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -8,9 +8,13 @@ public class SQLCode {
     //Initialization of the connection to the database
     private static final String DATABASE_URL = "jdbc:mysql://sql5.freesqldatabase.com:3306/sql5492952";
     private static final String DATABASE_USERNAME = "sql5492952";
-    private static final String DATABASE_PASSWORD = "KyaPVTwKWe";
-    private static final String SELECT_QUERY = "SELECT * FROM Members WHERE username_ID = ? and password_ID = ?";
+    private static final String DATABASE_PASSWORD = "KYaPVTwKWe";
+    private static final String SELECT_QUERY = "SELECT * FROM Member WHERE username = ? and password = ?";
     private static Integer MemberID;
+    private static final String memberType = "public";
+    private static final Integer allowedToBorrow = 0;
+    private static final Integer maxLoanforMemberType = 5;
+    //Lägg till variabel för MemberType
 
     public boolean validate(String usernameID, String passwordID) throws SQLException {
     //Start with establishing the connection to the database
@@ -33,6 +37,7 @@ public class SQLCode {
                 //This ID is then used in during the rest of the users session to assist them and the system in
                 //Identifying how much they can loan, what they have on loan and other information.
                 memberID(resultSet.getInt("memberID"));
+
                 return true;
             }
         } catch (SQLException exception){
@@ -63,15 +68,19 @@ public static void printSQLException (SQLException exceptions){
     {
         try (Connection databaseConnection = DriverManager.getConnection(DATABASE_URL, DATABASE_USERNAME, DATABASE_PASSWORD);
              Statement statement = databaseConnection.createStatement();
-             PreparedStatement registerPrepared = databaseConnection.prepareStatement("INSERT INTO Members VALUES (?,?, ?, ?, ?, ?, ?) ");)
+             PreparedStatement registerPrepared = databaseConnection.prepareStatement("INSERT INTO Member(socialSecurityNumber, telNo, fName, lName, email, memberType, maxLoanLimit, allowedToBorrow, username, password ) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");)
         {
-                 registerPrepared.setString(1, fName);
-            registerPrepared.setString(2, lName);
-            registerPrepared.setString(3, email);
-            registerPrepared.setString(4, phoneNumber);
-            registerPrepared.setLong(5, socialSecurity);
-            registerPrepared.setString(6, password);
-            registerPrepared.setString(7, userName);
+                 registerPrepared.setLong(1, socialSecurity);
+            registerPrepared.setString(2, phoneNumber);
+            registerPrepared.setString(3, fName);
+            registerPrepared.setString(4, lName);
+            registerPrepared.setString(5, email);
+            registerPrepared.setString(6, memberType);
+            registerPrepared.setInt(7, maxLoanforMemberType);
+            registerPrepared.setInt(8, allowedToBorrow);
+            registerPrepared.setString(9, userName);
+            registerPrepared.setString(10, password);
             registerPrepared.executeUpdate();
         }
     }
