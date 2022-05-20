@@ -148,7 +148,8 @@ public class ManageBooksController extends ManageController {
 
             String isbn = tfBookISBN.getText();
             if(isFieldEmpty(isbn) == true){
-                emptyFieldAlert();
+                String field = "ISBN";
+                emptyFieldAlert(field);
             }else{
                 String title = tfBookTitle.getText();
                 String author = tfBookAuthor.getText();
@@ -176,7 +177,8 @@ public class ManageBooksController extends ManageController {
 
             String isbn = tfBookISBN.getText();
             if (isFieldEmpty(isbn) == true) {
-                emptyFieldAlert();
+                String field = "ISBN";
+                emptyFieldAlert(field);
             } else {
                 String title = tfBookTitle.getText();
                 String author = tfBookAuthor.getText();
@@ -206,7 +208,8 @@ public class ManageBooksController extends ManageController {
         try{
             Statement statement = getConnection().getDBConnection().createStatement();
             if(isFieldEmpty(isbn) == true) {
-                emptyFieldAlert();
+                String field = "ISBN";
+                emptyFieldAlert(field);
             }else{
                 if(confirmationAlert() == true) {
                     statement.executeUpdate(deleteBook);

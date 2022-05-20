@@ -81,10 +81,10 @@ public class ManageDvdsController extends ManageController {
     @FXML
     private TextField tfDvdTitle;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        showList();
-    }
+//    @Override
+//    public void initialize(URL url, ResourceBundle resourceBundle) {
+//        showList();
+//    }
 
     public void handleMouseAction(javafx.scene.input.MouseEvent mouseEvent) {
         Dvd dvd = mDvdTableview.getSelectionModel().getSelectedItem();
@@ -166,7 +166,8 @@ public class ManageDvdsController extends ManageController {
 
         int dvdID = Integer.parseInt(tfDvdID.getText());
         if(isFieldEmpty(String.valueOf(dvdID)) == true){
-            emptyFieldAlert();
+            String field = "DvdID";
+            emptyFieldAlert(field);
         }else{
             String title = tfDvdTitle.getText();
             String genre = tfDvdGenre.getText();
@@ -176,11 +177,9 @@ public class ManageDvdsController extends ManageController {
             String ageRestriction = tfDvdAgeRestriction.getText();
             String country = tfDvdCountry.getText();
 
-            String insert = AdminQueries.getDvdInsert(dvdID, title, director, genre, language, actors, ageRestriction, country);
-//            String update = AdminQueries.getDvdUpdate(dvdID, title, director, genre, language, actors, ageRestriction, country, dvdIDBeforeUpdate);
-
 
             if(whichQuery.equalsIgnoreCase("insert")){
+                String insert = AdminQueries.getDvdInsert(dvdID, title, director, genre, language, actors, ageRestriction, country);
                 statement.executeUpdate(insert);
             }
             if(whichQuery.equalsIgnoreCase("update")){
@@ -234,7 +233,8 @@ public class ManageDvdsController extends ManageController {
             Statement statement = getConnection().getDBConnection().createStatement();
             int dvdID = Integer.parseInt(tfDvdID.getText());
             if(isFieldEmpty(String.valueOf(dvdID)) == true) {
-                emptyFieldAlert();
+                String field = "DvdID";
+                emptyFieldAlert(field);
             }else{
                 if(confirmationAlert() == true) {
                     statement.executeUpdate(delete);

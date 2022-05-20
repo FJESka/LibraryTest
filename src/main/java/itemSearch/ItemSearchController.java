@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -18,6 +19,7 @@ import library.library.HelloApplication;
 import library.library.LoanController;
 import library.library.Queries;
 import loginform.LoginApp;
+import loginform.SQLLoginCode;
 
 import java.io.IOException;
 import java.net.URL;
@@ -78,6 +80,8 @@ public class ItemSearchController implements Initializable {
     @FXML
     private Button btnLogin;
 
+    @FXML
+    private Button btnReturn;
 
     ObservableList<ItemSearch> itemSearchObservableList = FXCollections.observableArrayList();
 
@@ -85,30 +89,69 @@ public class ItemSearchController implements Initializable {
     public void buttonAction(ActionEvent event) throws IOException {
         if(event.getSource() == btnAdminView){
             //Kontroll på om användare är inloggad och om de är en admin?
-
+//            if(SQLLoginCode.Member() != null && SQLLoginCode.Type().equalsIgnoreCase("admin"))
+            Scenes.adminPage();
+//            else{
+//                Warnings a = new Warnings();
+//                String message = "Only administrators can access this view.";
+//                a.alertMessage(Alert.AlertType.INFORMATION, message);
+//            }
 
         }
+
         if(event.getSource() == btnLoan){
             //Kontroll för om användare är inloggad?
-            FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("loan.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 600, 400);
-            Stage stage = new Stage();
-            stage.setTitle("Loan");
-            stage.setScene(scene);
 
-            stage.show();
+            if(SQLLoginCode.Member() != null){
+                Scenes.loanPage();
+
+            }else{
+                Warnings a = new Warnings();
+                String message = "You need to be logged in to loan.";
+                if(a.alertConfirmation(message) == true){
+                    Scenes.loginPage();
+                }
+
+            }
+
         }
+
         if(event.getSource() == btnLogin){
             //Lägg in if sats för om användare redan är inloggad så kommer alert/profilsida?
-            FXMLLoader fxmlLoader = new FXMLLoader(LoginApp.class.getResource("hello-view.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 1000, 700);
-            Stage stage = new Stage();
-            stage.setTitle("Login page");
-            stage.setScene(scene);
-            stage.show();
+            if(SQLLoginCode.Member() == null){
+                Scenes.loginPage();
+            }else{
+                Warnings a = new Warnings();
+                String message = "You are already logged in.";
+                a.alertMessage(javafx.scene.control.Alert.AlertType.INFORMATION, message);
+            }
 
         }
+
+        if(event.getSource() == btnReturn){
+            Scenes.returnPage();
+        }
     }
+
+//    @FXML
+//    public void loanPage(ActionEvent event) throws IOException {
+//        if(SQLLoginCode.Member() != null){
+//            Parent root = FXMLLoader.load(getClass().getResource("loan2.fxml"));
+//            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+//            Scene scene = new Scene(root);
+//            stage.setScene(scene);
+//            stage.show();
+//
+//        }else{
+//            Warnings a = new Warnings();
+//            String message = "You need to be logged in to loan.";
+//            if(a.alertConfirmation(message) == true){
+//                Scenes.loginPage();
+//            }
+//
+//        }
+//
+//    }
 
     @Override
    public void initialize(URL url, ResourceBundle resource) {
