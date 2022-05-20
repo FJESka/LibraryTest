@@ -1,4 +1,4 @@
-package loginform;
+package com.example.loginform;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -45,34 +45,69 @@ public class RegisterUserController {
     private TextField socialSecurityField;
 
     @FXML
-    public void register(ActionEvent event) throws SQLException, IOException {
+    //This handles the information, errorhandling and alike in the registration form.
+    public void register(ActionEvent event) throws SQLException, IOException
+    {
 
         Window owner = submitButton.getScene().getWindow();
 
-        if (firstNameField.getText().isEmpty()) {
+        //Handles the firstname field
+        if (firstNameField.getText().isEmpty())
+        {
             showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
                     "Please enter your name");
             return;
         }
 
-        if (lastNameField.getText().isEmpty()){
+        //Handles the lastname field
+        if (lastNameField.getText().isEmpty())
+        {
             showAlert(Alert.AlertType.ERROR, owner, "Form Error!", "Please enter your name");
         }
 
-        if (emailIdField.getText().isEmpty()) {
+        //Handles the email field
+        if (emailIdField.getText().isEmpty())
+        {
             showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
                     "Please enter your email");
             return;
         }
-        if (passwordField.getText().isEmpty()) {
+
+        //Phone number field handling
+        if (phoneNumberField.getText().isEmpty())
+        {
+            showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
+                    "Please enter a phone number");
+            return;
+        }
+
+        //SocialSecurity handling
+        if (socialSecurityField.getText().isEmpty())
+        {
+            showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
+                    "Please enter your social security number");
+            return;
+        }
+
+        //password field handling
+        if (passwordField.getText().isEmpty())
+        {
             showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
                     "Please enter a password");
             return;
         }
 
+        //username field handling
+        if (userNameField.getText().isEmpty())
+        {
+            showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
+                    "Please enter a username");
+            return;
+        }
+
+        //Once all fields have been filled the following code is ran, collecting the
+        //Information from all fields and placing them inside of variables.
         String socialSecurityText = socialSecurityField.getText();
-
-
         String userName =userNameField.getText();
         String fName = firstNameField.getText();
         String lName = lastNameField.getText();
@@ -84,11 +119,16 @@ public class RegisterUserController {
         //Below commented code is only used to troubleshoot in case of an issue with values.
         //System.out.println(fName+"\n"+lName+"\n"+emailId+"\n"+phoneNumber+"\n"+socialSecurity+"\n"+password);
 
+        //A new SQLCode is created and then registerUser is done with the variables from
+        //the above code ran as arguments for the method.
         SQLCode sql = new SQLCode();
         sql.registerUser(fName, lName, emailId, phoneNumber, socialSecurity, password, userName);
 
+        //Once the process is successful a message is displayed to the user to inform them
+        //That they are now logged in
         showAlert(Alert.AlertType.CONFIRMATION, owner, "Registration Successful!",
                 "Welcome " + firstNameField.getText());
+        backTrack();
     }
 
     public void backTrack() throws IOException{

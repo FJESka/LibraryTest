@@ -1,4 +1,4 @@
-package loginform;
+package com.example.loginform;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,14 +18,12 @@ public class LoginAppController extends LoginApp {
     private PasswordField loginPasswordPasswordField;
 
     @FXML
-    private Button LoginButton;
-
-    @FXML
     private Button registerUser;
 
+    //This method is triggered once you click the submit button in the FXML view.
     @FXML
     private void submitButtonAction (ActionEvent event) throws SQLException, IOException {
-
+        //Checks if there is a username in the field username.
         if (loginUsernameTextField.getText().isEmpty())
         {
         Alert usernameAlert = new Alert(Alert.AlertType.INFORMATION);
@@ -33,13 +31,16 @@ public class LoginAppController extends LoginApp {
         usernameAlert.setContentText("Please enter your username before proceeding");
         usernameAlert.showAndWait();
         return;
+        //Checks if there is a password in the field for password.
         }
         if (loginPasswordPasswordField.getText().isEmpty()){
             Alert passwordAlert = new Alert(Alert.AlertType.INFORMATION);
             passwordAlert.setTitle("Display message");
             passwordAlert.setContentText("Please enter your password before proceeding");
             passwordAlert.showAndWait();
+
             return;
+            //If both fields have values upon clicking on the submit button then the text will be given over to the sqlLoginCode method
         }
         String usernameID = loginUsernameTextField.getText();
         String passwordID = loginPasswordPasswordField.getText();
@@ -55,17 +56,18 @@ public class LoginAppController extends LoginApp {
             loginAlert.showAndWait();
         }
         else
-        //Successful login will push the user back to the search page where they can find their books that they wish to borrow.
+        //Successful login will inform the user that they are now logged in and where they can find the librarians for help.
         {
-            Scene currentScene = LoginButton.getScene();
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("SEARCHPAGE.fxml"));
-            Parent tempRoot = loader.load();
-            currentScene.setRoot(tempRoot);
+            Alert loginAlert = new Alert(Alert.AlertType.INFORMATION);
+            loginAlert.setTitle("Login Successful");
+            loginAlert.setContentText("Login Successful, Welcome "+usernameID+" to your library account.\n" +
+                    "Should you need any help you can find our librarians at the helpdesk.");
+            loginAlert.show();
         }
         return;
     }
 
+    //THis code is to load the Register User section to allow for a user to register.
     public void registerUserButton() throws IOException{
             Scene currentScene = registerUser.getScene();
 
