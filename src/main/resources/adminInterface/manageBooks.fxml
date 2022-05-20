@@ -54,5 +54,6 @@
             <TableColumn fx:id="colBookPublisher" prefWidth="61.2386474609375" text="Publisher" />
         </columns>
       </TableView>
+      <Button fx:id="backToAdminMenu" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#switchBackToAdminStart" text="Back to Admin Menu" />
    </children>
 </AnchorPane>

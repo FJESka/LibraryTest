@@ -10,6 +10,7 @@
       <AnchorPane prefHeight="543.0" prefWidth="162.0" style="-fx-background-color: #98421e;">
          <children>
             <Button fx:id="button_Back" layoutX="54.0" layoutY="488.0" mnemonicParsing="false" text="Back" />
+            <Button fx:id="backToAdminMenu" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#switchBackToAdminStart" text="Back to Admin Menu" />
          </children>
       </AnchorPane>
       <TableView fx:id="table_overdue" layoutX="162.0" prefHeight="543.0" prefWidth="479.0">
