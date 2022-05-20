@@ -88,43 +88,54 @@ public class LoanController {
     // Method to search item and add to listview. Tests if the barcode exits and if it is available for loan.
     @FXML
     void searchItem (ActionEvent event) throws SQLException {
+        try {
+            PreparedStatement ps = getConnection().getDBConnection().prepareStatement(Queries.LoanCheckIfBarcodeExistsQuery(searchBarcodeTextField.getText()));
+            ResultSet rs = ps.executeQuery();
 
-        PreparedStatement ps = getConnection().getDBConnection().prepareStatement(Queries.LoanCheckIfBarcodeExistsQuery(searchBarcodeTextField.getText()));
-        ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                PreparedStatement ps1 = getConnection().getDBConnection().prepareStatement(Queries.LoanCheckIfItemCopyIsAvailable(searchBarcodeTextField.getText()));
+                ResultSet rs1 = ps1.executeQuery();
 
-        if (rs.next()) {
-            PreparedStatement ps1 = getConnection().getDBConnection().prepareStatement(Queries.LoanCheckIfItemCopyIsAvailable(searchBarcodeTextField.getText()));
-            ResultSet rs1 = ps1.executeQuery();
-
-            if (rs1.next()) {
-                alertMessage(Alert.AlertType.INFORMATION, "Wrong barcode, the item is not available. Try again.");
-            }
-
-            PreparedStatement preparedStatement = getConnection().getDBConnection().prepareStatement(Queries.LoanFindBarcodeQuery(searchBarcodeTextField.getText()));
-            ResultSet rs2 = preparedStatement.executeQuery();
-
-            while (rs2.next()) {
-
-                if (!loanList.contains(rs2.getString("barcode") + "             " + rs2.getString("title"))) {
-                    loanList.add(rs2.getString("barcode") + "             " + rs2.getString("title"));
-                    addItemToLoanList();
-                    searchBarcodeTextField.clear();
+                if (rs1.next()) {
+                    alertMessage(Alert.AlertType.INFORMATION, "Wrong barcode, the item is not available. Try again.");
                 }
-                else {
-                    alertMessage(Alert.AlertType.INFORMATION,"The item is already added to the list!" );
-                    searchBarcodeTextField.clear();
+
+                PreparedStatement preparedStatement = getConnection().getDBConnection().prepareStatement(Queries.LoanFindBarcodeQuery(searchBarcodeTextField.getText()));
+                ResultSet rs2 = preparedStatement.executeQuery();
+
+                PreparedStatement preparedStatement1 = getConnection().getDBConnection().prepareStatement(Queries.LoanFindDvdBarcodeQuery(searchBarcodeTextField.getText()));
+                ResultSet rs3 = preparedStatement1.executeQuery();
+
+                if (rs2.next()) {
+                    if (!loanList.contains(rs2.getString("barcode") + "             " + rs2.getString("title"))) {
+                        loanList.add(rs2.getString("barcode") + "             " + rs2.getString("title"));
+                        addItemToLoanList();
+                        searchBarcodeTextField.clear();
+                    } else {
+                        alertMessage(Alert.AlertType.INFORMATION, "The item is already added to the list!");
+                        searchBarcodeTextField.clear();
+                    }
+                }else if (rs3.next()) {
+                    if (!loanList.contains(rs3.getString("barcode") + "             " + rs3.getString("title"))) {
+                        loanList.add(rs3.getString("barcode") + "             " + rs3.getString("title"));
+                        addItemToLoanList();
+                        searchBarcodeTextField.clear();
+                    } else {
+                        alertMessage(Alert.AlertType.INFORMATION, "The item is already added to the list!");
+                        searchBarcodeTextField.clear();
+                    }
                 }
+            } else if (searchBarcodeTextField.getText().isEmpty()) {
+                alertMessage(Alert.AlertType.INFORMATION, "You need to type in a barcode!");
+            } else {
+                alertMessage(Alert.AlertType.INFORMATION, "Wrong barcode, the barcode does not exists. Try again.");
             }
-        }
-        else if (searchBarcodeTextField.getText().isEmpty()) {
-            alertMessage(Alert.AlertType.INFORMATION, "You need to type in a barcode!");
-        }
-        else {
-            alertMessage(Alert.AlertType.INFORMATION, "Wrong barcode, the barcode does not exists. Try again.");
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
-    // Method to initialize labels.
+    // Method to initialize labels and checkLoans() method.
     public void initialize() throws IOException {
         populateMaxLoanLabel();
         populateCurrentLoansLabel();
@@ -137,8 +148,8 @@ public class LoanController {
             PreparedStatement preparedStatement = getConnection().getDBConnection().prepareStatement(Queries.maxLoanLimitQuery());
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()) {
-                int maxLoans = rs.getInt("maxLoanLimit");
-                maxLoansLabel.setText("Maximum number of loans possible: " + maxLoans + ".");
+                maxLoan = rs.getInt("maxLoanLimit");
+                maxLoansLabel.setText("Maximum number of loans possible: " + maxLoan + ".");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -153,7 +164,7 @@ public class LoanController {
             PreparedStatement preparedStatement1 = getConnection().getDBConnection().prepareStatement(Queries.NoOfLoanQuery());
             ResultSet rs1 = preparedStatement1.executeQuery();
             while (rs1.next()) {
-                int noOfLoans = rs1.getInt(1);
+                noOfLoans = rs1.getInt(1);
                 currentLoansLabel.setText("You currently have: " + noOfLoans + " loans.");
             }
         }
@@ -164,7 +175,7 @@ public class LoanController {
     }
 
     //Method to get max loan limit.
-    private void getMaxLoanLimit() {
+    private int getMaxLoanLimit() {
         try {
             PreparedStatement preparedStatement = getConnection().getDBConnection().prepareStatement(Queries.maxLoanLimitQuery());
             ResultSet rs = preparedStatement.executeQuery();
@@ -174,11 +185,11 @@ public class LoanController {
             }
         } catch (Exception e){
             e.printStackTrace();
-        }
+        }return maxLoan;
     }
 
     // Method to get current number of loans.
-    private void getNoOfLoans() {
+    private int getNoOfLoans() {
         try {
             PreparedStatement preparedStatement1 = getConnection().getDBConnection().prepareStatement(Queries.NoOfLoanQuery());
             ResultSet rs1 = preparedStatement1.executeQuery();
@@ -187,7 +198,7 @@ public class LoanController {
             }
         }catch (Exception e) {
             e.printStackTrace();
-        }
+        }return noOfLoans;
     }
 
     // Method to check if allowed to borrow.

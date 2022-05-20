@@ -68,7 +68,6 @@ public class ReturnItemController {
                 e.printStackTrace();
             }
         }
-
         alertMessage(Alert.AlertType.CONFIRMATION, "The item(s) has successfully been returned!");
         changeToSearch(event);
     }
@@ -85,19 +84,32 @@ public class ReturnItemController {
 
             if (rs1.next()) {
                 alertMessage(Alert.AlertType.INFORMATION,"Wrong barcode, the item is not on loan and can not be returned. Try again." );
-            }
-            PreparedStatement preparedStatement = getConnection().getDBConnection().prepareStatement(Queries.findBarcodeQuery(searchItemTextField.getText()));
-            ResultSet rs2 = preparedStatement.executeQuery();
+                searchItemTextField.clear();
+            } else {
+                PreparedStatement preparedStatement = getConnection().getDBConnection().prepareStatement(Queries.findBarcodeQuery(searchItemTextField.getText()));
+                ResultSet rs2 = preparedStatement.executeQuery();
 
-            while (rs2.next()) {
-                if (!returnItemList.getItems().contains(rs2.getString("barcode") + "              " + rs2.getString("title") + "                " + rs2.getString("loanID"))) {
-                    returnList.add(rs2.getString("barcode") + "              " + rs2.getString("title") + "                " + rs2.getString("loanID"));
-                    AddItemToReturnList();
-                    searchItemTextField.clear();
-                }
-                else {
-                    alertMessage(Alert.AlertType.INFORMATION,"The item is already added to the list!" );
-                    searchItemTextField.clear();
+                PreparedStatement ps2 = getConnection().getDBConnection().prepareStatement(Queries.findDvdBarcodeQuery(searchItemTextField.getText()));
+                ResultSet rs3 = ps2.executeQuery();
+
+                if (rs2.next()) {
+                    if (!returnItemList.getItems().contains(rs2.getString("barcode") + "              " + rs2.getString("title") + "                " + rs2.getString("loanID"))) {
+                        returnList.add(rs2.getString("barcode") + "              " + rs2.getString("title") + "                " + rs2.getString("loanID"));
+                        AddItemToReturnList();
+                        searchItemTextField.clear();
+                    } else {
+                        alertMessage(Alert.AlertType.INFORMATION, "The item is already added to the list!");
+                        searchItemTextField.clear();
+                    }
+                } else if (rs3.next()){
+                    if (!returnItemList.getItems().contains(rs3.getString("barcode") + "             " + rs3.getString("title"))) {
+                        returnList.add(rs3.getString("barcode") + "             " + rs3.getString("title"));
+                        AddItemToReturnList();
+                        searchItemTextField.clear();
+                    } else {
+                        alertMessage(Alert.AlertType.INFORMATION, "The item is already added to the list!");
+                        searchItemTextField.clear();
+                    }
                 }
             }
         }
@@ -106,6 +118,7 @@ public class ReturnItemController {
         }
         else {
             alertMessage(Alert.AlertType.INFORMATION, "Wrong barcode, the barcode does not exists. Try again.");
+            searchItemTextField.clear();
         }
     }
 
