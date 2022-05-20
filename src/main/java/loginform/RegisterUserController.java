@@ -1,4 +1,4 @@
-package com.example.loginform;
+package loginform;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

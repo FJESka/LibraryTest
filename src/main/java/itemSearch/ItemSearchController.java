@@ -14,21 +14,17 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
-import library.library.HelloApplication;
-import library.library.LoanController;
-import library.library.Queries;
-import loginform.LoginApp;
 import loginform.SQLLoginCode;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static bookSearch.DatabaseConnection.getConnection;
 
 public class ItemSearchController implements Initializable {
 
@@ -101,7 +97,6 @@ public class ItemSearchController implements Initializable {
 
         if(event.getSource() == btnLoan){
             //Kontroll för om användare är inloggad?
-
             if(SQLLoginCode.Member() != null){
                 Scenes.loanPage();
 
@@ -113,7 +108,6 @@ public class ItemSearchController implements Initializable {
                 }
 
             }
-
         }
 
         if(event.getSource() == btnLogin){
