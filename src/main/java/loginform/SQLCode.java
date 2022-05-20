@@ -1,4 +1,4 @@
-package com.example.loginform;
+package loginform;
 
 import java.io.IOException;
 import java.math.BigInteger;
