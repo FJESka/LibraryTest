@@ -1,4 +1,4 @@
-package bookSearch;
+package databaseConnection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,6 +7,7 @@ public class DatabaseConnection {
 
     public Connection databaseLink;
 
+    //Skapar en Connection
     public Connection getDBConnection(){
 
         String databaseName = "sql5492952";
@@ -25,6 +26,7 @@ public class DatabaseConnection {
         return databaseLink;
     }
 
+    //Skapar en DatabaseConnection
     public static DatabaseConnection getConnection(){
         DatabaseConnection connectNow = new DatabaseConnection();
         return connectNow;

@@ -1,4 +1,4 @@
-package library.library;
+package loanAndReturn;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,7 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import static bookSearch.DatabaseConnection.getConnection;
+import static databaseConnection.DatabaseConnection.getConnection;
 
 public class ReturnItemController {
 

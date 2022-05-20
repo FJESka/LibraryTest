@@ -1,4 +1,4 @@
-package com.example.loginform;
+package loginform;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,6 +17,7 @@ import java.math.BigInteger;
 import java.sql.SQLException;
 
 public class RegisterUserController {
+    //FXML elements are loaded into the class
     @FXML
     private TextField firstNameField;
 
@@ -131,15 +132,18 @@ public class RegisterUserController {
         backTrack();
     }
 
+    //Here below you will find the button in the Register site that takes you "Backwards" or back to the login screen should you
+    //Have clicked wrong earlier. It identifies the button used and then gets the scene before overlapping it with the login page again.
     public void backTrack() throws IOException{
         Scene currentScene = backButton.getScene();
 
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
         Parent tempRoot = loader.load();
         currentScene.setRoot(tempRoot);
     }
 
+    //This method will handle all the alerst used to push down on repeat code in our class.
     private static void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);

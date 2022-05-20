@@ -1,34 +1,21 @@
 package adminInterface;
 
-import bookSearch.BookSearch;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ResourceBundle;
 
-import static bookSearch.DatabaseConnection.getConnection;
+import static databaseConnection.DatabaseConnection.getConnection;
 
 public class ManageDvdsController extends ManageController {
 
-    @FXML
-    private Button btnDelete;
-
-    @FXML
-    private Button btnInsert;
-
-    @FXML
-    private Button btnUpdate;
 
     @FXML
     private TableColumn<Dvd, String> colDvdActors;
@@ -81,11 +68,8 @@ public class ManageDvdsController extends ManageController {
     @FXML
     private TextField tfDvdTitle;
 
-//    @Override
-//    public void initialize(URL url, ResourceBundle resourceBundle) {
-//        showList();
-//    }
 
+    //Hanterar val i tableview och sätter textfält till value av det valda objektet
     public void handleMouseAction(javafx.scene.input.MouseEvent mouseEvent) {
         Dvd dvd = mDvdTableview.getSelectionModel().getSelectedItem();
         tfDvdID.setText("" + dvd.getDvdID());
@@ -99,6 +83,7 @@ public class ManageDvdsController extends ManageController {
 
     }
 
+    //Rensar alla textfält
     public void clearTextfields(){
         tfDvdID.clear();
         tfDvdTitle.clear();
@@ -110,12 +95,49 @@ public class ManageDvdsController extends ManageController {
         tfDvdCountry.clear();
     }
 
+    //kollar om textfält är tomma, om de är tomma skapas en alert
+    public boolean areFieldsEmpty() {
+        boolean fieldsEmpty = false;
+        if (isFieldEmpty(tfDvdID.getText()) == true) {
+            String field = "Dvd ID";
+            emptyFieldAlert(field);
+            fieldsEmpty = true;
+        } else if (isFieldEmpty(tfDvdTitle.getText()) == true) {
+            String field = "Title";
+            emptyFieldAlert(field);
+            fieldsEmpty = true;
+        } else if (isFieldEmpty(tfDvdDirector.getText()) == true) {
+            String field = "Director";
+            emptyFieldAlert(field);
+            fieldsEmpty = true;
+        } else if (isFieldEmpty(tfDvdLanguage.getText()) == true) {
+            String field = "Language";
+            emptyFieldAlert(field);
+            fieldsEmpty = true;
+        }else if (isFieldEmpty(tfDvdActors.getText()) == true) {
+            String field = "Actors";
+            emptyFieldAlert(field);
+            fieldsEmpty = true;
+        }else if (isFieldEmpty(tfDvdGenre.getText()) == true) {
+            String field = "Genre";
+            emptyFieldAlert(field);
+            fieldsEmpty = true;
+        }else if (isFieldEmpty(tfDvdCountry.getText()) == true) {
+            String field = "Country";
+            emptyFieldAlert(field);
+            fieldsEmpty = true;
+        }
+        return fieldsEmpty;
+    }
+
+    //Hämtar dvdID från det valda objektet
     public String getDvdID(){
         Dvd dvd = mDvdTableview.getSelectionModel().getSelectedItem();
         String dvdID = "" + dvd.getDvdID();
         return dvdID;
     }
 
+    //Kör sökquery och lägger resultaten i en lista
     public ObservableList<Dvd> getRecords() {
         String dvdQuery = "SELECT id, title, director, genre, language, actors, ageRestriction, country FROM Dvd";
         ObservableList<Dvd> dvdObservableList = FXCollections.observableArrayList();
@@ -145,6 +167,26 @@ public class ManageDvdsController extends ManageController {
         return dvdObservableList;
     }
 
+    //Kollar om dvdID som användaren försöker ange finns i databasen redan
+    public boolean doValuesExistInDatabase() throws SQLException {
+        boolean valuesExist = true;
+
+        if (tfDvdID.getText() != null && tfDvdID.getText().isBlank() != true) {
+            int dvdID = Integer.parseInt(tfDvdID.getText());
+            if (doesDvdIDExistInDatabase(dvdID) == true) {
+                Alert a = new Alert();
+                String message = "The title already exists in the database.";
+                a.alertMessage(javafx.scene.control.Alert.AlertType.INFORMATION, message);
+                valuesExist = true;
+            }
+            else{
+                valuesExist = false;
+            }
+        }
+        return valuesExist;
+    }
+
+    //sätter värdena i tableviews fält och tableview
     public void showList(){
         ObservableList<Dvd> list = getRecords();
         // Sets values in the table columns
@@ -162,13 +204,14 @@ public class ManageDvdsController extends ManageController {
         mDvdTableview.setItems(list);
     }
 
-    public void getValues(Statement statement, String whichQuery) throws SQLException {
+    //hämtar values från användarens input och returnerar rätt query beroende på vilken knapp användaren tryckt på
+    public String getValuesAndQuery(Statement statement, String whichQuery) throws SQLException {
+        String query = null;
 
-        int dvdID = Integer.parseInt(tfDvdID.getText());
-        if(isFieldEmpty(String.valueOf(dvdID)) == true){
-            String field = "DvdID";
-            emptyFieldAlert(field);
-        }else{
+        if(areFieldsEmpty() == true){
+
+        }else {
+            int dvdID = Integer.parseInt(tfDvdID.getText());
             String title = tfDvdTitle.getText();
             String genre = tfDvdGenre.getText();
             String director = tfDvdDirector.getText();
@@ -178,27 +221,32 @@ public class ManageDvdsController extends ManageController {
             String country = tfDvdCountry.getText();
 
 
-            if(whichQuery.equalsIgnoreCase("insert")){
+            if (whichQuery.equalsIgnoreCase("insert")) {
                 String insert = AdminQueries.getDvdInsert(dvdID, title, director, genre, language, actors, ageRestriction, country);
-                statement.executeUpdate(insert);
+                query = insert;
             }
-            if(whichQuery.equalsIgnoreCase("update")){
+            if (whichQuery.equalsIgnoreCase("update")) {
                 String dvdIDBeforeUpdate = getDvdID();
                 String update = AdminQueries.getDvdUpdate(dvdID, title, director, genre, language, actors, ageRestriction, country, dvdIDBeforeUpdate);
-                statement.executeUpdate(update);
+                query = update;
             }
-
-
         }
+
+        return query;
     }
 
+    //Metoden för att göra insert, körs när användaren trycker på insert knappen
     public void insert(){
 
         try {
             Statement statement = getConnection().getDBConnection().createStatement();
 
             String whichQuery = "insert";
-            getValues(statement, whichQuery);
+            String query = getValuesAndQuery(statement, whichQuery);
+
+            if(query != null && doValuesExistInDatabase() == false && areFieldsEmpty() == false){
+                statement.executeUpdate(query);
+            }
 
         showList();
 
@@ -209,13 +257,16 @@ public class ManageDvdsController extends ManageController {
 
     }
 
+    //Metoden för att göra update, körs när användaren trycker på update knappen
     public void update() {
         try {
             Statement statement = getConnection().getDBConnection().createStatement();
             String whichQuery = "update";
-            getValues(statement, whichQuery);
+            String query = getValuesAndQuery(statement, whichQuery);
 
-//                String update = "UPDATE `Dvd` SET `id` = '" + dvdID +"', `title` = '"+ title +"', `director` = '"+ director +"', `genre` = '"+ genre +"', `language` = '"+ language +"', `actors` = '"+ actors +"', `ageRestriction` = '"+ ageRestriction +"', `country` = '"+ country +"' WHERE (`id` = '" + dvdIDBeforeUpdate + "');";
+            if(query != null && doValuesExistInDatabase() == false && areFieldsEmpty() == false){
+                statement.executeUpdate(query);
+            }
 
             clearTextfields();
             showList();
@@ -225,6 +276,8 @@ public class ManageDvdsController extends ManageController {
         }
     }
 
+    //Metoden för att göra delete, körs när användaren trycker på delet knappen.
+    //Skapar en confirmation alert innan delete querien körs för att kolla så användaren är säker på att de vill delete.
     public void delete(){
         String dvdIDBeforeUpdate = getDvdID();
         String delete = AdminQueries.getDvdDelete(dvdIDBeforeUpdate);

@@ -1,20 +1,17 @@
 package itemSearch;
 
-import bookSearch.DatabaseConnection;
+import databaseConnection.DatabaseConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import loginform.SQLLoginCode;
+import loginform.SQLCode;
+
 
 import java.io.IOException;
 import java.net.URL;
@@ -26,7 +23,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static bookSearch.DatabaseConnection.getConnection;
+import static databaseConnection.DatabaseConnection.getConnection;
 
 public class ItemSearchController implements Initializable {
 
@@ -84,26 +81,27 @@ public class ItemSearchController implements Initializable {
     ObservableList<ItemSearch> itemSearchObservableList = FXCollections.observableArrayList();
 
     @FXML
+    //Hanterar buttons admin view, loan, login och return
     public void buttonAction(ActionEvent event) throws IOException, SQLException {
         if(event.getSource() == btnAdminView){
-            //Kontroll på om användare är inloggad och om de är en admin?
-            if(SQLLoginCode.Member() != null && memberType(SQLLoginCode.Member()).equalsIgnoreCase("admin"))
+            //Kontroll på om användare är inloggad och om de är en admin. Om de är en admin skickas de till admin startsida, om inte skapas en alert.
+            if(SQLCode.getMember() != null && memberType(SQLCode.getMember()).equalsIgnoreCase("admin"))
             Scenes.adminPage();
             else{
-                Warnings a = new Warnings();
+                Alert a = new Alert();
                 String message = "Only administrators can access this view.";
-                a.alertMessage(Alert.AlertType.INFORMATION, message);
+                a.alertMessage(javafx.scene.control.Alert.AlertType.INFORMATION, message);
             }
 
         }
 
         if(event.getSource() == btnLoan){
-            //Kontroll för om användare är inloggad?
-            if(SQLLoginCode.Member() != null){
+            //Kontroll för om användare är inloggad, om de är det kommer de till lånsidan, om inte skapas en alert
+            if(SQLCode.getMember() != null){
                 Scenes.loanPage();
 
             }else{
-                Warnings a = new Warnings();
+                Alert a = new Alert();
                 String message = "You need to be logged in to loan.";
                 if(a.alertConfirmation(message) == true){
                     Scenes.loginPage();
@@ -113,17 +111,18 @@ public class ItemSearchController implements Initializable {
         }
 
         if(event.getSource() == btnLogin){
-            //Lägg in if sats för om användare redan är inloggad så kommer alert/profilsida?
-            if(SQLLoginCode.Member() == null){
+            //Kontroll för om användare är inloggad, om de inte är det kommer de till lånsidan, om de är det skapas en alert
+            if(SQLCode.getMember() == null){
                 Scenes.loginPage();
             }else{
-                Warnings a = new Warnings();
+                Alert a = new Alert();
                 String message = "You are already logged in.";
                 a.alertMessage(javafx.scene.control.Alert.AlertType.INFORMATION, message);
             }
 
         }
 
+        //Tar användaren till retur sida
         if(event.getSource() == btnReturn){
             Scenes.returnPage();
         }
@@ -133,13 +132,12 @@ public class ItemSearchController implements Initializable {
     @Override
    public void initialize(URL url, ResourceBundle resource) {
 
-        DatabaseConnection connectNow = new DatabaseConnection();
-        Connection connectDB = connectNow.getDBConnection();
-
         try {
-            Statement statement = connectDB.createStatement();
+            //Skapar en databaseconnection och kör sökquery
+            Statement statement = getConnection().getDBConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(ItemSearchQueries.newSearchAllItems);
 
+            //sätter sökresultat i strings, skapar ett item och lägger in det i en lista
             while (resultSet.next()) {
                 String qIsbn = resultSet.getString("isbn");
                 String qTitle = resultSet.getString("title");
@@ -153,13 +151,11 @@ public class ItemSearchController implements Initializable {
                 Integer qTotalCopies = resultSet.getInt("totalCopies");
                 Integer qAvailable = resultSet.getInt("available");
 
-                //Populate the observableList with results from our SQL Query
 
                 itemSearchObservableList.add(new ItemSearch(qIsbn, qTitle, qAuthor, qKeyword, qLanguage, qPublisher, qActors, qAgeRestriction, qCountry, qTotalCopies, qAvailable));
 
             }
-            // Sets values in the table columns
-
+            // Sätter värden i tabellkolumner och i tableview
             colISBN1.setCellValueFactory(new PropertyValueFactory<ItemSearch, String>("isbn"));
             colTitle1.setCellValueFactory(new PropertyValueFactory<ItemSearch, String>("title"));
             colAuthor1.setCellValueFactory(new PropertyValueFactory<ItemSearch, String>("author"));
@@ -177,15 +173,17 @@ public class ItemSearchController implements Initializable {
 
             FilteredList<ItemSearch> filteredData = new FilteredList<>(itemSearchObservableList, b -> true);
 
+            //Skapar en listener som kollar sökfältets nya värden
             searchBar1.textProperty().addListener((observable, oldValue, newValue) -> {
                 filteredData.setPredicate(ItemSearch -> {
-                    //if there's no search results, then display all records
+                    //Om det inte matas in något nytt value, visa alla resultat
                     if (newValue.isEmpty() || newValue.isBlank() || newValue == null) {
                         return true;
                     }
 
                     String searchKeyword = newValue.toLowerCase();
 
+                    //Kollar det inmatade sökordet mot värden i tableview
                     if (ItemSearch.getIsbn().toLowerCase().indexOf(searchKeyword) > -1) {
                         return true; //Means we found a match in the isbn attribute
                     } else if (ItemSearch.getTitle().toLowerCase().indexOf(searchKeyword) > -1) {
@@ -209,9 +207,11 @@ public class ItemSearchController implements Initializable {
                 });
             });
 
+            //Skapar en sorted list som har sökresultaten
             SortedList<ItemSearch> sortedData = new SortedList<>(filteredData);
             sortedData.comparatorProperty().bind(tableview1.comparatorProperty());
 
+            //sätter sökresultatet i tableview
             tableview1.setItems(sortedData);
 
         } catch (SQLException e) {
@@ -221,6 +221,7 @@ public class ItemSearchController implements Initializable {
 
     }
 
+    //Hämtar memberType från memberID
     public String memberType(int memberID) throws SQLException {
         Statement statement = getConnection().getDBConnection().createStatement();
 

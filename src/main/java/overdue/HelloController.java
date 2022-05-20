@@ -1,4 +1,4 @@
-package Overdue;
+package overdue;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,15 +19,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import static bookSearch.DatabaseConnection.getConnection;
+import static databaseConnection.DatabaseConnection.getConnection;
 
 public class HelloController implements Initializable  {
 
@@ -46,22 +43,26 @@ public class HelloController implements Initializable  {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        //Query to get overdue loans
         String overdueQuery = "SELECT l.dueDate, l.memberID, b.title FROM Loan l JOIN ItemCopy i ON l.barcode = i.barcode JOIN Book b ON i.ISBN_ItemCopy = b.isbn WHERE l.dueDate < current_date UNION SELECT l.dueDate, l.memberID, d.title FROM Loan l JOIN ItemCopy i ON l.barcode = i.barcode JOIN Dvd d ON i.dvdID_ItemCopy = d.id WHERE l.dueDate < current_date";
 
 
         try {
 
+            //creates a connection and executes query
             Statement statement = getConnection().getDBConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(overdueQuery);
 
+            //sets result to strings and creates a new overdueTable and adds to list
             while (resultSet.next()) {
                 String queryDuedate = resultSet.getString("dueDate");
                 String queryMemberID = resultSet.getString("memberID");
                 String queryTitle = resultSet.getString("title");
 
-                overdueSearchlist.add(new overdueTable(queryDuedate, queryMemberID, queryTitle));
+                overdueSearchlist.add(new overdueTable(queryMemberID, queryDuedate, queryTitle));
 
             }
+            //sets the columns in tableview to the right values and adds objects to tableview
             col_dueDate.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
             col_memberId.setCellValueFactory(new PropertyValueFactory<>("memberID"));
             col_title.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -75,6 +76,7 @@ public class HelloController implements Initializable  {
         }
     }
 
+    //method to switch back to admin start page
     public void switchBackToAdminStart(ActionEvent event) throws IOException {
         Parent root;
         Stage stage;

@@ -1,4 +1,4 @@
-package library.library;
+package loanAndReturn;
 
 import itemSearch.ItemSearchApplication;
 import javafx.collections.FXCollections;
@@ -17,7 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import static bookSearch.DatabaseConnection.getConnection;
+import static databaseConnection.DatabaseConnection.getConnection;
 
 public class LoanController {
     @FXML

@@ -1,4 +1,4 @@
-package com.example.loginform;
+package loginform;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -10,7 +10,7 @@ public class SQLCode {
     private static final String DATABASE_USERNAME = "sql5492952";
     private static final String DATABASE_PASSWORD = "KYaPVTwKWe";
     private static final String SELECT_QUERY = "SELECT * FROM Member WHERE username = ? and password = ?";
-    private static Integer MemberID;
+    private static Integer MemberID = 5;
     private static final String memberType = "public";
     private static final Integer allowedToBorrow = 0;
     private static final Integer maxLoanforMemberType = 5;
@@ -44,7 +44,7 @@ public class SQLCode {
             //Prints SQL Exception information
             printSQLException(exception);
         }
-        return true;
+        return false;
 }
 //Error handling for SQL connection, it shows what is wrong, codes and states of SQL connection
 public static void printSQLException (SQLException exceptions){
@@ -86,12 +86,12 @@ public static void printSQLException (SQLException exceptions){
     }
 
 //Sets the MemberID with the ID from the database, default value is null.
-    public Integer memberID(int id)
+    public Integer memberID(Integer id)
     {
         MemberID = id;
         return MemberID;
     }
 
     //A way for other methods to get the memberID
-    public static int getMember() {return MemberID;}
+    public static Integer getMember() {return MemberID;}
 }

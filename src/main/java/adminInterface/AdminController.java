@@ -18,6 +18,7 @@ public class AdminController {
     private Scene scene;
     private Parent root;
 
+    //Hanterar byte av scen, från admin view till manage copies
     public void switchToManageCopies(ActionEvent event) throws IOException {
         root = FXMLLoader.load(getClass().getResource("manageCopies.fxml"));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
@@ -27,6 +28,7 @@ public class AdminController {
 
     }
 
+    //Hanterar byte av scen, från admin view till manage books
     public void switchToManageBooks(ActionEvent event) throws IOException {
         root = FXMLLoader.load(getClass().getResource("manageBooks.fxml"));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
@@ -36,6 +38,7 @@ public class AdminController {
 
     }
 
+    //Hanterar byte av scen, från admin view till manage dvds
     public void switchToManageDvds(ActionEvent event) throws IOException {
         root = FXMLLoader.load(getClass().getResource("manageDvds.fxml"));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
@@ -45,6 +48,7 @@ public class AdminController {
 
     }
 
+    //Hanterar byte av scen, från admin view till overdue loans
     public void switchToOverdueLoans(ActionEvent event) throws IOException {
         root = FXMLLoader.load(getClass().getResource("overdue.fxml"));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();

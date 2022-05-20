@@ -9,7 +9,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.Button?>
-<GridPane fx:controller="com.example.loginform.RegisterUserController"
+<GridPane fx:controller="loginform.RegisterUserController"
           xmlns:fx="http://javafx.com/fxml" alignment="center"
           hgap="10" vgap="10">
    <padding>
