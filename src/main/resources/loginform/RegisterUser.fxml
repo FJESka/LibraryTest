@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Button?>
+<GridPane fx:controller="com.example.loginform.RegisterUserController"
+          xmlns:fx="http://javafx.com/fxml" alignment="center"
+          hgap="10" vgap="10">
+   <padding>
+      <Insets top="40" right="40" bottom="40" left="40"/>
+   </padding>
+   <columnConstraints>
+      <ColumnConstraints minWidth="100" prefWidth="100"
+                         maxWidth="Infinity" halignment="RIGHT"></ColumnConstraints>
+      <ColumnConstraints minWidth="200" prefWidth="200"
+                         maxWidth="Infinity" hgrow="ALWAYS"></ColumnConstraints>
+   </columnConstraints>
+   <!-- Add Header Label -->
+   <Label text="Registration of User" GridPane.columnIndex="0"
+          GridPane.rowIndex="0" GridPane.columnSpan="2"
+          GridPane.rowSpan="1" GridPane.halignment="CENTER" >
+      <font>
+         <Font name="Arial" size="24" ></Font>
+      </font>
+      <GridPane.margin>
+         <Insets top="20" right="0" bottom="20" left="0"></Insets>
+      </GridPane.margin>
+   </Label>
+   <!-- Asks user to enter their full name -->
+   <Label text="First Name : " GridPane.columnIndex="0"
+          GridPane.rowIndex="1" ></Label>
+   <!-- Add Name Text Field -->
+   <TextField fx:id="firstNameField" prefHeight="40"
+              GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+   <!-- Add Email Label -->
+   <Label text="Last Name : " GridPane.columnIndex="0"
+          GridPane.rowIndex="2" ></Label>
+   <!-- Add Email Text Field -->
+   <TextField fx:id="lastNameField" prefHeight="40"
+              GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+   <!-- Add Password Label -->
+   <Label text="Email : " GridPane.columnIndex="0"
+          GridPane.rowIndex="3" ></Label>
+   <!-- Add Password Field -->
+   <TextField fx:id="emailIdField" prefHeight="40"
+                  GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+   <!-- Asking for phone number -->
+   <Label text="Phone number: " GridPane.columnIndex="0" GridPane.rowIndex="4"></Label>
+   <TextField fx:id="phoneNumberField" prefHeight="40" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+
+   <Label text="SocialSecurityNumber: " GridPane.columnIndex="0" GridPane.rowIndex="5"></Label>
+   <TextField fx:id="socialSecurityField" prefHeight="40" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+
+   <Label text="Password: " GridPane.columnIndex="0" GridPane.rowIndex="6"></Label>
+   <PasswordField fx:id="passwordField" prefHeight="40" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+
+   <Label text="Username: " GridPane.columnIndex="0" GridPane.rowIndex="7"></Label>
+   <TextField fx:id="userNameField" prefHeight="40" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+
+   <!-- Add Submit Button -->
+   <Button fx:id="submitButton" text="Submit"
+           prefWidth="100" prefHeight="40" defaultButton="true"
+           GridPane.columnIndex="0" GridPane.rowIndex="8"
+           GridPane.columnSpan="2" GridPane.rowSpan="1"
+           GridPane.halignment="CENTER"
+           onAction="#register">
+      <GridPane.margin>
+         <Insets top="20" right="0" bottom="20" left="0"></Insets>
+      </GridPane.margin>
+   </Button>
+   <Button fx:id="backButton" text="Cancel" prefWidth="100" prefHeight="40" defaultButton="true" GridPane.columnIndex="0" GridPane.rowIndex="9" GridPane.columnSpan="2" GridPane.rowSpan="1" GridPane.halignment="CENTER" onAction="#backTrack">
+      <GridPane.margin>
+         <Insets top="0" right="0" bottom="20" left="0"></Insets>
+      </GridPane.margin>
+   </Button>
+</GridPane>

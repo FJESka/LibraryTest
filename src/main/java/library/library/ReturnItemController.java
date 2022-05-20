@@ -19,6 +19,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import static bookSearch.DatabaseConnection.getConnection;
+
 public class ReturnItemController {
 
     @FXML
@@ -57,16 +59,15 @@ public class ReturnItemController {
             String[] currentItemBarcode = returnList.get(i).split(" ");
 
             try {
-                PreparedStatement preparedStatement = JDBCConnection.jdbcConnection().prepareStatement(Queries.ReturnItemUpdateItemQuery(currentItemBarcode));
+                PreparedStatement preparedStatement = getConnection().getDBConnection().prepareStatement(Queries.ReturnItemUpdateItemQuery(currentItemBarcode));
                 preparedStatement.executeUpdate(Queries.ReturnItemUpdateItemQuery(currentItemBarcode));
 
-                PreparedStatement ps = JDBCConnection.jdbcConnection().prepareStatement(Queries.ReturnItemUpdateLoanQuery(currentItemBarcode));
+                PreparedStatement ps = getConnection().getDBConnection().prepareStatement(Queries.ReturnItemUpdateLoanQuery(currentItemBarcode));
                 ps.executeUpdate(Queries.ReturnItemUpdateLoanQuery(currentItemBarcode));
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-
         alertMessage(Alert.AlertType.CONFIRMATION, "The item(s) has successfully been returned!");
         changeToSearch(event);
     }
@@ -74,28 +75,41 @@ public class ReturnItemController {
     // Method to search item and add to listview. Tests if the barcode exists and is possible to return.
     @FXML
     void searchItem(ActionEvent event) throws SQLException {
-        PreparedStatement ps = JDBCConnection.jdbcConnection().prepareStatement(Queries.checkIfBarcodeExistsQuery(searchItemTextField.getText()));
+        PreparedStatement ps = getConnection().getDBConnection().prepareStatement(Queries.checkIfBarcodeExistsQuery(searchItemTextField.getText()));
         ResultSet rs = ps.executeQuery();
 
         if (rs.next()) {
-            PreparedStatement ps1 = JDBCConnection.jdbcConnection().prepareStatement(Queries.checkIfItemcopyIsNotAvailable(searchItemTextField.getText()));
+            PreparedStatement ps1 = getConnection().getDBConnection().prepareStatement(Queries.checkIfItemcopyIsNotAvailable(searchItemTextField.getText()));
             ResultSet rs1 = ps1.executeQuery();
 
             if (rs1.next()) {
                 alertMessage(Alert.AlertType.INFORMATION,"Wrong barcode, the item is not on loan and can not be returned. Try again." );
-            }
-            PreparedStatement preparedStatement = JDBCConnection.jdbcConnection().prepareStatement(Queries.findBarcodeQuery(searchItemTextField.getText()));
-            ResultSet rs2 = preparedStatement.executeQuery();
+                searchItemTextField.clear();
+            } else {
+                PreparedStatement preparedStatement = getConnection().getDBConnection().prepareStatement(Queries.findBarcodeQuery(searchItemTextField.getText()));
+                ResultSet rs2 = preparedStatement.executeQuery();
 
-            while (rs2.next()) {
-                if (!returnItemList.getItems().contains(rs2.getString("barcode") + "              " + rs2.getString("title") + "                " + rs2.getString("loanID"))) {
-                    returnList.add(rs2.getString("barcode") + "              " + rs2.getString("title") + "                " + rs2.getString("loanID"));
-                    AddItemToReturnList();
-                    searchItemTextField.clear();
-                }
-                else {
-                    alertMessage(Alert.AlertType.INFORMATION,"The item is already added to the list!" );
-                    searchItemTextField.clear();
+                PreparedStatement ps2 = getConnection().getDBConnection().prepareStatement(Queries.findDvdBarcodeQuery(searchItemTextField.getText()));
+                ResultSet rs3 = ps2.executeQuery();
+
+                if (rs2.next()) {
+                    if (!returnItemList.getItems().contains(rs2.getString("barcode") + "              " + rs2.getString("title") + "                " + rs2.getString("loanID"))) {
+                        returnList.add(rs2.getString("barcode") + "              " + rs2.getString("title") + "                " + rs2.getString("loanID"));
+                        addItemToReturnList();
+                        searchItemTextField.clear();
+                    } else {
+                        alertMessage(Alert.AlertType.INFORMATION, "The item is already added to the list!");
+                        searchItemTextField.clear();
+                    }
+                } else if (rs3.next()){
+                    if (!returnItemList.getItems().contains(rs3.getString("barcode") + "             " + rs3.getString("title"))) {
+                        returnList.add(rs3.getString("barcode") + "             " + rs3.getString("title"));
+                        addItemToReturnList();
+                        searchItemTextField.clear();
+                    } else {
+                        alertMessage(Alert.AlertType.INFORMATION, "The item is already added to the list!");
+                        searchItemTextField.clear();
+                    }
                 }
             }
         }
@@ -104,6 +118,7 @@ public class ReturnItemController {
         }
         else {
             alertMessage(Alert.AlertType.INFORMATION, "Wrong barcode, the barcode does not exists. Try again.");
+            searchItemTextField.clear();
         }
     }
 
@@ -128,7 +143,7 @@ public class ReturnItemController {
     }
 
     // Method to add the barcodes to the listview.
-    void AddItemToReturnList() {
+    void addItemToReturnList() {
         ObservableList <String> returnListBarcodes = FXCollections.observableArrayList(returnList);
         returnItemList.setItems(returnListBarcodes);
     }
