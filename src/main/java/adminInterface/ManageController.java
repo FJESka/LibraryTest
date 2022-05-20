@@ -28,7 +28,7 @@ public class ManageController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        showList();
     }
 
     @FXML
@@ -78,9 +78,9 @@ public class ManageController implements Initializable {
         return isFieldEmpty;
     }
 
-    public void emptyFieldAlert(){
+    public void emptyFieldAlert(String field){
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText("Barcode can't be empty. Please add a barcode or select a row to update.");
+        alert.setHeaderText(field + " can't be empty. Please add a " + field + " or select a row to update.");
         alert.showAndWait();
     }
 
